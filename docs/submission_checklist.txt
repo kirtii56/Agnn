@@ -1,0 +1,138 @@
+SUBMISSION CHECKLIST
+====================
+
+Pre-Submission Validation for UHDM AGN Paper
+
+## Code Quality
+
+[ ] All Python scripts run without errors
+[ ] All required dependencies listed in requirements.txt
+[ ] Code follows PEP 8 style guidelines
+[ ] Functions have docstrings
+[ ] No hardcoded file paths (use relative paths)
+[ ] Random seeds set for reproducibility
+[ ] Unit tests written and passing (pytest)
+
+## Figures
+
+[ ] Figure 1: EFT validity (corrected) - generates correctly
+[ ] Figure 2: Gamma max vs sigma - generates correctly
+[ ] Figure 3: Production rates - generates correctly
+[ ] Figure 4: Multi-messenger constraints - generates correctly
+[ ] Figure S1: MCMC diagnostics - generates correctly
+[ ] All figures are vector PDFs (not raster)
+[ ] Font sizes readable (≥10pt)
+[ ] Axes labeled with units
+[ ] Legends clear and positioned appropriately
+[ ] Color schemes are colorblind-friendly
+[ ] Figures match manuscript references
+
+## Data
+
+[ ] All data sources properly cited
+[ ] Data download instructions in data/README_data.txt
+[ ] Large files (.fits, .h5) in .gitignore
+[ ] MCMC output file generated successfully
+[ ] Data provenance documented
+[ ] No proprietary data included without permission
+
+## Analysis Validation
+
+[ ] MCMC converges (check R-hat values < 1.1)
+[ ] Autocorrelation times reasonable (< n_steps/50)
+[ ] Posterior distributions well-sampled
+[ ] EFT validity checks applied correctly
+[ ] Cross sections match analytical limits
+[ ] Observational constraints correctly implemented
+[ ] Parameter ranges physically motivated
+
+## Manuscript
+
+[ ] LaTeX compiles without errors or warnings
+[ ] All references in references.bib
+[ ] All figures referenced in text
+[ ] All equations numbered correctly
+[ ] Author list and affiliations complete
+[ ] Acknowledgments section complete
+[ ] Abstract ≤250 words
+[ ] Introduction provides clear motivation
+[ ] Methods described in sufficient detail
+[ ] Results clearly presented
+[ ] Discussion addresses limitations
+[ ] Conclusions summarize key findings
+
+## Supplementary Material
+
+[ ] Supplementary PDF includes MCMC diagnostics
+[ ] Additional technical details documented
+[ ] Code availability statement included
+[ ] Data availability statement included
+
+## Reproducibility
+
+[ ] Docker image builds successfully
+[ ] Conda environment creates without errors
+[ ] workflow/run_analysis.sh executes completely
+[ ] Analysis runs on fresh install
+[ ] README.md provides clear instructions
+[ ] Dependencies pinned to specific versions
+[ ] Computational requirements documented
+
+## Version Control
+
+[ ] All code committed to git
+[ ] .gitignore properly configured
+[ ] No large binary files in repo (use Git LFS)
+[ ] README.md updated
+[ ] CHANGELOG.md created (if multiple versions)
+[ ] Tagged release (e.g., v1.0.0)
+
+## External Repositories
+
+[ ] GitHub repository public (or ready to make public)
+[ ] Zenodo DOI reserved
+[ ] arXiv submission prepared
+[ ] License file included (MIT)
+
+## Journal-Specific Requirements
+
+ApJ (The Astrophysical Journal):
+[ ] Manuscript in RevTeX4-2 format
+[ ] Figures submitted separately as PDFs
+[ ] Tables in machine-readable format
+[ ] Comply with ApJ length limits
+[ ] Author statement on software/data
+[ ] Conflict of interest statement
+
+## Peer Review Preparation
+
+[ ] Cover letter drafted
+[ ] Suggested reviewers identified (3-5)
+[ ] Reviewers to exclude listed (if any)
+[ ] Response to previous reviewers (if resubmission)
+
+## Final Checks
+
+[ ] Co-authors approved final manuscript
+[ ] Institutional approval obtained (if required)
+[ ] Funding acknowledgments complete
+[ ] No typos or grammatical errors
+[ ] Consistent notation throughout
+[ ] SI units used consistently
+[ ] References formatted correctly
+
+## Post-Submission
+
+[ ] Upload to arXiv
+[ ] Tweet/announce on social media
+[ ] Update personal website
+[ ] Add to Google Scholar profile
+[ ] Register DOI on Zenodo
+[ ] Make GitHub repo public
+[ ] Announce on relevant mailing lists
+
+---
+
+Checklist completed by: ___________________
+Date: ___________________
+Signature: ___________________

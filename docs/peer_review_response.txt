@@ -1,0 +1,77 @@
+RESPONSE TO REFEREE COMMENTS
+============================
+
+Manuscript: "Ultra-High-Density Matter in Active Galactic Nuclei:
+             Constraints from Multi-Messenger Observations"
+
+Authors: [Author List]
+Manuscript ID: APJ-XXXXX
+Date: [Submission Date]
+
+---
+
+We thank the referee for their careful reading of our manuscript and their
+constructive comments. Below we address each point raised.
+
+[Note: This is a placeholder file. Fill in with actual referee comments
+and responses when they are received.]
+
+---
+
+REFEREE REPORT
+==============
+
+[Referee comments will be inserted here]
+
+---
+
+AUTHOR RESPONSES
+================
+
+Major Comments:
+
+1. [Referee Comment]
+
+   Response: [Author response]
+
+   Changes made: [Specific changes to manuscript]
+
+2. [Referee Comment]
+
+   Response: [Author response]
+
+   Changes made: [Specific changes to manuscript]
+
+
+Minor Comments:
+
+1. [Referee Comment]
+
+   Response: [Author response]
+
+   Changes made: [Specific changes to manuscript]
+
+---
+
+SUMMARY OF CHANGES
+==================
+
+Major revisions:
+- [List major changes]
+
+Minor revisions:
+- [List minor changes]
+
+New figures:
+- [List any new figures added]
+
+Additional analysis:
+- [List any new calculations or analysis]
+
+---
+
+We believe these revisions have significantly strengthened the manuscript
+and hope the referee will now recommend publication.
+
+Sincerely,
+[Corresponding Author]

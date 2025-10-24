@@ -1,0 +1,9 @@
+# Ignore large data files
+*.fits
+*.h5
+*.dat
+*.csv
+
+# Keep this README
+!README_data.txt
+!.gitignore

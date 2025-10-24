@@ -1,0 +1,124 @@
+{
+  "title": "Ultra-High-Density Matter in Active Galactic Nuclei: Constraints from Multi-Messenger Observations",
+  "authors": [
+    {
+      "name": "First Author",
+      "affiliation": "Institution 1",
+      "orcid": "0000-0000-0000-0001",
+      "email": "first.author@institution.edu"
+    },
+    {
+      "name": "Second Author",
+      "affiliation": "Institution 2",
+      "orcid": "0000-0000-0000-0002",
+      "email": "second.author@institution.edu"
+    }
+  ],
+  "abstract": "We investigate the production of ultra-high-density matter (UHDM) in magnetically-dominated jets of active galactic nuclei (AGN) using general relativistic magnetohydrodynamic (GRMHD) simulations and effective field theory (EFT) calculations. Combining constraints from Fermi-LAT gamma-ray observations, IceCube neutrino detections, and Pierre Auger Observatory ultra-high-energy cosmic ray measurements, we perform a comprehensive Bayesian analysis of the UHDM parameter space. Our Monte Carlo analysis (10^6 samples) excludes UHDM masses in the range 100 GeV - 10 TeV for coupling strengths g > 0.1, assuming standard jet energetics. These results provide the most stringent multi-messenger constraints on exotic physics in AGN environments to date.",
+  "keywords": [
+    "active galactic nuclei",
+    "ultra-high-density matter",
+    "multi-messenger astronomy",
+    "effective field theory",
+    "GRMHD simulations",
+    "gamma-ray astronomy",
+    "neutrino astronomy",
+    "cosmic rays",
+    "Bayesian inference",
+    "MCMC"
+  ],
+  "publication": {
+    "journal": "The Astrophysical Journal",
+    "status": "submitted",
+    "submission_date": "2024-XX-XX",
+    "manuscript_id": "APJ-XXXXX"
+  },
+  "preprint": {
+    "arxiv_id": "XXXX.XXXXX",
+    "arxiv_category": "astro-ph.HE",
+    "submission_date": "2024-XX-XX"
+  },
+  "data_repository": {
+    "zenodo_doi": "10.5281/zenodo.XXXXXXX",
+    "github_url": "https://github.com/username/UHDM_AGN_Paper_Final",
+    "license": "MIT"
+  },
+  "computational_requirements": {
+    "python_version": "3.9",
+    "key_packages": [
+      "numpy>=1.21.0",
+      "scipy>=1.7.0",
+      "matplotlib>=3.4.0",
+      "emcee>=3.1.0",
+      "corner>=2.2.0",
+      "h5py>=3.3.0",
+      "astropy>=4.3.0"
+    ],
+    "optional_packages": [
+      "lhapdf"
+    ],
+    "runtime_estimate": "8-12 hours (full MCMC)",
+    "memory_requirements": "8 GB RAM",
+    "cpu_cores": 16
+  },
+  "figures": [
+    {
+      "number": 1,
+      "file": "figures/fig1_eft_validity_corrected.pdf",
+      "caption": "EFT validity regions showing cutoff scale vs UHDM mass",
+      "generated_by": "code/eft_cross_sections.py"
+    },
+    {
+      "number": 2,
+      "file": "figures/fig2_gamma_max.pdf",
+      "caption": "Maximum Lorentz factors from GRMHD simulations",
+      "generated_by": "code/grmhd_acceleration.py"
+    },
+    {
+      "number": 3,
+      "file": "figures/fig3_production_rate.pdf",
+      "caption": "UHDM production rates vs mass",
+      "generated_by": "code/eft_cross_sections.py"
+    },
+    {
+      "number": 4,
+      "file": "figures/fig4_constraints.pdf",
+      "caption": "Multi-messenger constraints summary",
+      "generated_by": "code/observational_constraints.py"
+    },
+    {
+      "number": "S1",
+      "file": "figures/figS1_mcmc_diagnostics.pdf",
+      "caption": "MCMC convergence diagnostics",
+      "generated_by": "code/monte_carlo_sampling.py"
+    }
+  ],
+  "data_files": [
+    {
+      "name": "fermi_lat_3fhl_catalog.fits",
+      "description": "Fermi-LAT Third Catalog of Hard Sources",
+      "source": "https://fermi.gsfc.nasa.gov/ssc/data/access/lat/3FHL/",
+      "size_mb": 50
+    },
+    {
+      "name": "icecube_neutrino_limits.csv",
+      "description": "IceCube neutrino stacking analysis limits",
+      "source": "IceCube Collaboration public data",
+      "size_mb": 0.1
+    },
+    {
+      "name": "auger_uhecr_spectrum.dat",
+      "description": "Pierre Auger UHECR spectrum",
+      "source": "https://www.auger.org/",
+      "size_mb": 0.01
+    },
+    {
+      "name": "mc_posterior_samples.h5",
+      "description": "Monte Carlo posterior samples from emcee",
+      "generated": true,
+      "size_mb": 500
+    }
+  ],
+  "version": "1.0.0",
+  "last_updated": "2024-XX-XX"
+}
