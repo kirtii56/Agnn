@@ -106,6 +106,24 @@ python code/monte_carlo_sampling.py
 python code/observational_constraints.py
 ```
 
+### Reproducing Results
+
+For complete step-by-step reproduction of all results:
+
+```bash
+# Run full Monte Carlo analysis (requires ~8 hours on 16-core CPU)
+python code/monte_carlo_sampling.py
+
+# Generate all figures
+python code/generate_figures.py --output figures/
+
+# Compile manuscript
+cd manuscript/
+latexmk -pdf manuscript_final.tex
+```
+
+**📖 See [REPRODUCING.md](REPRODUCING.md) for detailed instructions, troubleshooting, and validation steps.**
+
 ---
 
 ## 📊 Key Results
