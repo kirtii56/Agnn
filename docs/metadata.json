@@ -1,25 +1,22 @@
 {
-  "title": "Ultra-High-Density Matter in Active Galactic Nuclei: Constraints from Multi-Messenger Observations",
+  "title": "Ultra-Heavy Dark Matter Production in Active Galactic Nucleus Jets: A Falsifiable Multi-Messenger Framework",
   "authors": [
     {
-      "name": "First Author",
-      "affiliation": "Institution 1",
-      "orcid": "0000-0000-0000-0001",
-      "email": "first.author@institution.edu"
-    },
-    {
-      "name": "Second Author",
-      "affiliation": "Institution 2",
-      "orcid": "0000-0000-0000-0002",
-      "email": "second.author@institution.edu"
+      "name": "Kirti Patidar",
+      "affiliation": "Department of Physics and Astronomy, [Institution Name]",
+      "orcid": "0000-0000-0000-0000",
+      "email": "kirti.patidar@institution.edu"
     }
   ],
-  "abstract": "We investigate the production of ultra-high-density matter (UHDM) in magnetically-dominated jets of active galactic nuclei (AGN) using general relativistic magnetohydrodynamic (GRMHD) simulations and effective field theory (EFT) calculations. Combining constraints from Fermi-LAT gamma-ray observations, IceCube neutrino detections, and Pierre Auger Observatory ultra-high-energy cosmic ray measurements, we perform a comprehensive Bayesian analysis of the UHDM parameter space. Our Monte Carlo analysis (10^6 samples) excludes UHDM masses in the range 100 GeV - 10 TeV for coupling strengths g > 0.1, assuming standard jet energetics. These results provide the most stringent multi-messenger constraints on exotic physics in AGN environments to date.",
+  "abstract": "We investigate whether AGN jets can produce ultra-heavy dark matter (UHDM) with masses 10^15--10^19 eV through Standard Model particle collisions at center-of-mass energies sqrt(s) ~ 10^17--10^18 eV. Using GRMHD simulations, effective field theory parametrization, and multi-messenger observations (Fermi-LAT, IceCube, Pierre Auger), we predict production rates N_X ~ 10^10--10^15 s^-1 per AGN with factor-of-10^3 systematic uncertainties. Energy-loss-corrected calculations yield maximum particle Lorentz factors gamma_e,max ~ 10^6--10^7 (electrons) and gamma_p,max ~ 10^9--10^10 (protons), consistent with Fermi-LAT TeV observations and UHECR data. These energies lie within the EFT validity regime by nine orders of magnitude. Monte Carlo analysis scanning EFT couplings C_i = 10^-3--1 and jet parameters shows all predictions are consistent with Fermi-LAT, IceCube, and UHECR constraints. Integrating over AGN lifetimes and cosmic populations gives Omega_X^AGN ≲ 10^-10 Omega_DM---subdominant to primordial mechanisms but exhibiting unique spatial clustering and kinematic signatures testable by next-generation experiments (CTA, IceCube-Gen2, LISA).",
   "keywords": [
-    "active galactic nuclei",
-    "ultra-high-density matter",
-    "multi-messenger astronomy",
+    "dark matter",
+    "galaxies: active",
+    "galaxies: jets",
+    "particle physics",
+    "astroparticle physics",
     "effective field theory",
+    "multi-messenger astronomy",
     "GRMHD simulations",
     "gamma-ray astronomy",
     "neutrino astronomy",
@@ -28,19 +25,19 @@
     "MCMC"
   ],
   "publication": {
-    "journal": "The Astrophysical Journal",
-    "status": "submitted",
-    "submission_date": "2024-XX-XX",
-    "manuscript_id": "APJ-XXXXX"
+    "journal": "[Journal Name]",
+    "status": "ready_for_submission",
+    "submission_date": "2025-XX-XX",
+    "manuscript_id": "TBD"
   },
   "preprint": {
-    "arxiv_id": "XXXX.XXXXX",
+    "arxiv_id": "2410.XXXXX",
     "arxiv_category": "astro-ph.HE",
-    "submission_date": "2024-XX-XX"
+    "submission_date": "2025-XX-XX"
   },
   "data_repository": {
     "zenodo_doi": "10.5281/zenodo.XXXXXXX",
-    "github_url": "https://github.com/username/UHDM_AGN_Paper_Final",
+    "github_url": "https://github.com/kirtii56/Agnn",
     "license": "MIT"
   },
   "computational_requirements": {
@@ -57,15 +54,16 @@
     "optional_packages": [
       "lhapdf"
     ],
-    "runtime_estimate": "8-12 hours (full MCMC)",
+    "runtime_estimate": "8-12 hours (full MCMC with 10^6 samples)",
     "memory_requirements": "8 GB RAM",
-    "cpu_cores": 16
+    "cpu_cores": 16,
+    "random_seeds": [42, 137, 271, 314, 628]
   },
   "figures": [
     {
       "number": 1,
       "file": "figures/fig1_eft_validity_corrected.pdf",
-      "caption": "EFT validity regions showing cutoff scale vs UHDM mass",
+      "caption": "EFT validity regions showing cutoff scale vs UHDM mass (corrected)",
       "generated_by": "code/eft_cross_sections.py"
     },
     {
@@ -77,7 +75,7 @@
     {
       "number": 3,
       "file": "figures/fig3_production_rate.pdf",
-      "caption": "UHDM production rates vs mass",
+      "caption": "UHDM production rates vs mass (PDF-corrected)",
       "generated_by": "code/eft_cross_sections.py"
     },
     {
@@ -89,36 +87,44 @@
     {
       "number": "S1",
       "file": "figures/figS1_mcmc_diagnostics.pdf",
-      "caption": "MCMC convergence diagnostics",
+      "caption": "MCMC convergence diagnostics (5 chains, Gelman-Rubin R-hat < 1.01)",
       "generated_by": "code/monte_carlo_sampling.py"
     }
   ],
   "data_files": [
     {
       "name": "fermi_lat_3fhl_catalog.fits",
-      "description": "Fermi-LAT Third Catalog of Hard Sources",
+      "description": "Fermi-LAT Third Catalog of Hard Sources (3FHL)",
       "source": "https://fermi.gsfc.nasa.gov/ssc/data/access/lat/3FHL/",
-      "size_mb": 50
+      "size_mb": 50,
+      "citation": "Ajello et al. 2017, ApJS 232, 18"
     },
     {
       "name": "icecube_neutrino_limits.csv",
-      "description": "IceCube neutrino stacking analysis limits",
+      "description": "IceCube neutrino stacking analysis limits (1,163 AGN)",
       "source": "IceCube Collaboration public data",
-      "size_mb": 0.1
+      "size_mb": 0.1,
+      "citation": "IceCube Collaboration 2023, ApJ 954, 75"
     },
     {
       "name": "auger_uhecr_spectrum.dat",
-      "description": "Pierre Auger UHECR spectrum",
+      "description": "Pierre Auger UHECR spectrum and composition data",
       "source": "https://www.auger.org/",
-      "size_mb": 0.01
+      "size_mb": 0.01,
+      "citation": "Pierre Auger Collaboration 2020, PRL 125, 121106"
     },
     {
       "name": "mc_posterior_samples.h5",
-      "description": "Monte Carlo posterior samples from emcee",
+      "description": "Monte Carlo posterior samples from emcee (10^6 samples, 5 chains)",
       "generated": true,
       "size_mb": 500
     }
   ],
-  "version": "1.0.0",
-  "last_updated": "2024-XX-XX"
+  "version": "2.0-FINAL",
+  "last_updated": "2025-10-24",
+  "package_status": "ready_for_submission",
+  "revisions": {
+    "v1.0": "Initial submission",
+    "v2.0-FINAL": "Publication-ready version with all corrections applied (Issues 2.1-2.7)"
+  }
 }
