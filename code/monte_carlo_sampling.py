@@ -231,17 +231,39 @@ def plot_mcmc_diagnostics(sampler, output_file='../figures/figS1_mcmc_diagnostic
 
 
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description='MCMC parameter space exploration for UHDM production in AGN jets'
+    )
+    parser.add_argument('--nsamples', type=int, default=1000000,
+                       help='Total number of samples (default: 1000000)')
+    parser.add_argument('--nchains', type=int, default=5,
+                       help='Number of chains/walkers (default: 5)')
+    parser.add_argument('--output', type=str, default='../data/mc_posterior_samples.h5',
+                       help='Output HDF5 file (default: ../data/mc_posterior_samples.h5)')
+    parser.add_argument('--seed', type=int, default=42,
+                       help='Random seed for reproducibility (default: 42)')
+    args = parser.parse_args()
+
+    # Set random seed
+    np.random.seed(args.seed)
+
     print("Monte Carlo Sampling Module")
     print("=" * 50)
+    print(f"Configuration:")
+    print(f"  Total samples: {args.nsamples:,}")
+    print(f"  Number of chains: {args.nchains}")
+    print(f"  Steps per chain: {args.nsamples // args.nchains:,}")
+    print(f"  Random seed: {args.seed}")
+    print(f"  Output file: {args.output}")
+    print("=" * 50)
 
-    # Run MCMC (use small numbers for testing)
-    n_walkers = 16
-    n_steps = 500  # Use 10000 for production run
+    # Calculate n_walkers and n_steps from nsamples and nchains
+    n_walkers = args.nchains
+    n_steps = args.nsamples // args.nchains
 
-    print(f"\nTest run with {n_walkers} walkers, {n_steps} steps")
-    print("(For production, use n_walkers=32, n_steps=10000)")
-
-    sampler = run_mcmc(n_walkers=n_walkers, n_steps=n_steps)
+    sampler = run_mcmc(n_walkers=n_walkers, n_steps=n_steps, output_file=args.output)
 
     # Generate diagnostics
     plot_mcmc_diagnostics(sampler)
