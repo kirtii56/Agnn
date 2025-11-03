@@ -15,6 +15,7 @@ from scipy.optimize import fsolve
 
 # Physical constants
 c = 2.998e10  # Speed of light (cm/s)
+m_e = 9.109e-28  # Electron mass (g)
 m_p = 1.673e-24  # Proton mass (g)
 e = 4.803e-10  # Elementary charge (esu)
 
@@ -43,9 +44,9 @@ def magnetization_parameter(B, n, gamma_bulk):
 
 def max_lorentz_factor_reconnection(B, L_acc, eta=0.1):
     """
-    Maximum Lorentz factor from magnetic reconnection.
+    Maximum Lorentz factor from magnetic reconnection (for electrons).
 
-    γ_max ~ (e B L_acc) / (m_p c²)
+    γ_e,max ~ (e B L_acc) / (m_e c²)
 
     Parameters:
     -----------
@@ -59,9 +60,9 @@ def max_lorentz_factor_reconnection(B, L_acc, eta=0.1):
     Returns:
     --------
     gamma_max : float
-        Maximum Lorentz factor
+        Maximum electron Lorentz factor
     """
-    gamma_max = eta * (e * B * L_acc) / (m_p * c**2)
+    gamma_max = eta * (e * B * L_acc) / (m_e * c**2)
     return gamma_max
 
 

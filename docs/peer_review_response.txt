@@ -1,20 +1,19 @@
 RESPONSE TO REFEREE COMMENTS
 ============================
 
-Manuscript: "Ultra-High-Density Matter in Active Galactic Nuclei:
-             Constraints from Multi-Messenger Observations"
+Manuscript: "Ultra-Heavy Dark Matter Production in Active Galactic Nucleus Jets:
+             A Falsifiable Multi-Messenger Framework"
 
-Authors: [Author List]
-Manuscript ID: APJ-XXXXX
-Date: [Submission Date]
+Author: Kirti Patidar
+Status: ArXiv Preprint (Not yet submitted for peer review)
+Date: November 3, 2025
 
 ---
 
-We thank the referee for their careful reading of our manuscript and their
-constructive comments. Below we address each point raised.
+This file will contain responses to referee comments after journal submission.
 
-[Note: This is a placeholder file. Fill in with actual referee comments
-and responses when they are received.]
+For the current preprint version, all issues identified in the internal review
+have been addressed. See docs/submission_checklist.txt for complete validation.
 
 ---
 

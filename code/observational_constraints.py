@@ -120,7 +120,7 @@ def calculate_decay_fluxes(M_X, N_production_rate, distance=100):
     distance_cm = distance * 3.086e24  # Mpc to cm
 
     # Energy per decay
-    E_per_decay = M_X * 1.602e-10  # GeV to erg (1 GeV = 1.602e-3 erg)
+    E_per_decay = M_X * 1.602e-3  # GeV to erg (1 GeV = 1.602e-3 erg)
 
     # Total luminosity
     L_total = N_production_rate * E_per_decay

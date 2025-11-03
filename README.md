@@ -1,14 +1,13 @@
 # Ultra-Heavy Dark Matter Production in AGN Jets
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
-[![arXiv](https://img.shields.io/badge/arXiv-2410.XXXXX-b31b1b.svg)](https://arxiv.org/abs/2410.XXXXX)
+[![arXiv](https://img.shields.io/badge/arXiv-preprint-b31b1b.svg)](https://github.com/kirtii56/Agnn)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Authors:** Kirti Patidar
-**Affiliation:** Department of Physics and Astronomy, [Institution]
-**Contact:** kirti.patidar@institution.edu
+**Affiliation:** Independent Researcher
+**Contact:** kirti.research56@gmail.com
 **Version:** 2.0-FINAL
-**Last Updated:** October 24, 2025
+**Last Updated:** November 3, 2025
 
 ---
 
@@ -45,17 +44,16 @@ UHDM_AGN_Paper_Final/
 │   ├── observational_constraints.py  # Fermi/IceCube/Auger limits
 │   └── requirements.txt              # Python dependencies
 ├── data/
-│   ├── fermi_lat_3fhl_catalog.fits   # Fermi-LAT source catalog
-│   ├── icecube_neutrino_limits.csv   # IceCube stacking analysis
-│   ├── auger_uhecr_spectrum.dat      # Pierre Auger UHECR data
-│   └── mc_posterior_samples.h5       # Monte Carlo output (10^6 samples)
+│   ├── README_data.txt               # Data documentation
+│   └── [Large data files excluded via .gitignore]
+│       # Code uses built-in observational limit parameterizations
 ├── workflow/
 │   ├── Dockerfile                    # Reproducibility container
 │   ├── run_analysis.sh               # Master execution script
 │   └── environment.yml               # Conda environment
 ├── docs/
 │   ├── README.md                     # Detailed documentation
-│   ├── metadata.json                 # Project metadata (Zenodo/arXiv)
+│   ├── metadata.json                 # Project metadata (arXiv)
 │   ├── submission_checklist.txt      # Pre-submission validation
 │   └── peer_review_response.txt      # Response to reviewer comments
 └── LICENSE                           # MIT License
@@ -195,8 +193,7 @@ Figures are saved in `figures/` as vector PDFs (300 dpi).
 ### Random Seeds
 All random number generators are seeded for bit-exact reproducibility:
 ```python
-np.random.seed(42)  # NumPy operations
-# emcee chains use seeds: {42, 137, 271, 314, 628}
+np.random.seed(42)  # Default seed (configurable via --seed flag)
 ```
 
 ### Docker Container
@@ -227,10 +224,8 @@ If you use this code or data, please cite:
   author = {Patidar, Kirti},
   title = {Ultra-Heavy Dark Matter Production in Active Galactic Nucleus Jets:
            A Falsifiable Multi-Messenger Framework},
-  journal = {[Journal Name]},
   year = {2025},
-  eprint = {arXiv:2410.XXXXX},
-  doi = {10.XXXX/XXXXX}
+  note = {Preprint available at https://github.com/kirtii56/Agnn}
 }
 ```
 
@@ -255,8 +250,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 **Kirti Patidar**
-Department of Physics and Astronomy
-Email: kirti.patidar@institution.edu
+Independent Researcher
+Email: kirti.research56@gmail.com
 
 For questions or issues:
 - Open an issue on GitHub
@@ -268,14 +263,12 @@ For questions or issues:
 
 For detailed documentation, see:
 - [`docs/README.md`](docs/README.md) - Comprehensive technical documentation
-- [`docs/metadata.json`](docs/metadata.json) - Project metadata for Zenodo/arXiv
+- [`docs/metadata.json`](docs/metadata.json) - Project metadata for arXiv
 - [`docs/submission_checklist.txt`](docs/submission_checklist.txt) - Pre-submission validation
 - [`manuscript/`](manuscript/) - LaTeX source and compiled PDF
 
 ---
 
-**Status**: Ready for Submission
+**Status**: ArXiv Preprint Ready
 **Version**: 2.0-FINAL
-**arXiv**: arXiv:2410.XXXXX
-**Zenodo DOI**: 10.5281/zenodo.XXXXXXX
-**Last Updated**: October 24, 2025
+**Last Updated**: November 3, 2025
