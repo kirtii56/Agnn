@@ -96,3 +96,7 @@ htmlcov/
 *.o
 *.a
 *.dylib
+
+# Audit and review materials (external)
+audit_report/
+expert_review_package/
