@@ -1,7 +1,5 @@
 # Ultra-High-Density Matter in Active Galactic Nuclei
 
-[![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
@@ -162,14 +160,12 @@ Figures are saved in `figures/` as vector PDFs (300 dpi).
 If you use this code or data, please cite:
 
 ```bibtex
-@article{uhdm_agn_2024,
-  author = {[Authors]},
-  title = {Ultra-High-Density Matter in Active Galactic Nuclei:
-           Constraints from Multi-Messenger Observations},
-  journal = {[Journal]},
-  year = {2024},
-  eprint = {arXiv:XXXX.XXXXX},
-  doi = {10.XXXX/XXXXX}
+@article{patidar2025uhdm,
+  author = {Patidar, Kirti},
+  title = {Ultra-Heavy Dark Matter Production in Active Galactic Nucleus Jets:
+           A Falsifiable Multi-Messenger Framework},
+  year = {2025},
+  note = {Preprint available at https://github.com/kirtii56/Agnn}
 }
 ```
 
@@ -206,6 +202,6 @@ See `docs/submission_checklist.txt` for full checklist.
 
 ---
 
-**Status**: Submitted to [Journal Name]
-**arXiv**: arXiv:XXXX.XXXXX
-**Zenodo DOI**: 10.5281/zenodo.XXXXXXX
+**Status**: ArXiv Preprint Ready
+**Version**: 2.0-FINAL
+**Last Updated**: November 3, 2025

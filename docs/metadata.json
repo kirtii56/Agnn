@@ -3,9 +3,8 @@
   "authors": [
     {
       "name": "Kirti Patidar",
-      "affiliation": "Department of Physics and Astronomy, [Institution Name]",
-      "orcid": "0000-0000-0000-0000",
-      "email": "kirti.patidar@institution.edu"
+      "affiliation": "Independent Researcher",
+      "email": "kirti.research56@gmail.com"
     }
   ],
   "abstract": "We investigate whether AGN jets can produce ultra-heavy dark matter (UHDM) with masses 10^15--10^19 eV through Standard Model particle collisions at center-of-mass energies sqrt(s) ~ 10^17--10^18 eV. Using GRMHD simulations, effective field theory parametrization, and multi-messenger observations (Fermi-LAT, IceCube, Pierre Auger), we predict production rates N_X ~ 10^10--10^15 s^-1 per AGN with factor-of-10^3 systematic uncertainties. Energy-loss-corrected calculations yield maximum particle Lorentz factors gamma_e,max ~ 10^6--10^7 (electrons) and gamma_p,max ~ 10^9--10^10 (protons), consistent with Fermi-LAT TeV observations and UHECR data. These energies lie within the EFT validity regime by nine orders of magnitude. Monte Carlo analysis scanning EFT couplings C_i = 10^-3--1 and jet parameters shows all predictions are consistent with Fermi-LAT, IceCube, and UHECR constraints. Integrating over AGN lifetimes and cosmic populations gives Omega_X^AGN ≲ 10^-10 Omega_DM---subdominant to primordial mechanisms but exhibiting unique spatial clustering and kinematic signatures testable by next-generation experiments (CTA, IceCube-Gen2, LISA).",
@@ -25,18 +24,14 @@
     "MCMC"
   ],
   "publication": {
-    "journal": "[Journal Name]",
-    "status": "ready_for_submission",
-    "submission_date": "2025-XX-XX",
-    "manuscript_id": "TBD"
+    "status": "preprint",
+    "submission_date": "2025-11-03"
   },
   "preprint": {
-    "arxiv_id": "2410.XXXXX",
     "arxiv_category": "astro-ph.HE",
-    "submission_date": "2025-XX-XX"
+    "github_url": "https://github.com/kirtii56/Agnn"
   },
   "data_repository": {
-    "zenodo_doi": "10.5281/zenodo.XXXXXXX",
     "github_url": "https://github.com/kirtii56/Agnn",
     "license": "MIT"
   },
@@ -121,8 +116,8 @@
     }
   ],
   "version": "2.0-FINAL",
-  "last_updated": "2025-10-24",
-  "package_status": "ready_for_submission",
+  "last_updated": "2025-11-03",
+  "package_status": "preprint_ready",
   "revisions": {
     "v1.0": "Initial submission",
     "v2.0-FINAL": "Publication-ready version with all corrections applied (Issues 2.1-2.7)"

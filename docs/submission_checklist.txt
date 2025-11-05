@@ -1,7 +1,7 @@
 ═══════════════════════════════════════════════════════════════
 MANUSCRIPT SUBMISSION CHECKLIST
 Ultra-Heavy Dark Matter Production in AGN Jets
-Version 2.0-FINAL | October 24, 2025
+Version 2.0-FINAL | November 3, 2025
 ═══════════════════════════════════════════════════════════════
 
 SCIENTIFIC CONTENT
@@ -40,7 +40,7 @@ FIGURES & TABLES
 
 MONTE CARLO / STATISTICS
 ═════════════════════════
-☑ Random seeds specified: {42, 137, 271, 314, 628}
+☑ Random seed documented (default: 42, configurable via --seed flag)
 ☑ Convergence diagnostics: R̂ < 1.01, N_eff > 10^4, τ < 100
 ☑ Posterior predictive check included (Figure S1d)
 ☑ 68% confidence intervals reported (Table 2)
@@ -66,7 +66,7 @@ REPRODUCIBILITY
 ☑ Data sources linked (Fermi, IceCube, Auger)
 ☑ Code comments explain all functions
 ☑ Random seeds documented for bit-exact reproducibility
-☑ Zenodo DOI reserved (awaiting assignment)
+☑ Code and data publicly available on GitHub
 
 ABSTRACT & FORMATTING
 ══════════════════════
@@ -128,15 +128,15 @@ SUBMISSION MATERIALS PREPARED
 ☑ cover_letter.pdf (explaining novel contributions)
 ☑ response_to_reviewers.pdf (if revision)
 
-ZENODO UPLOAD (POST-ACCEPTANCE)
-════════════════════════════════
-☐ Upload code/ folder as .zip
-☐ Upload data/ folder as .zip (or link to external if >50 GB)
-☐ Upload manuscript_final.pdf as preprint
-☐ Fill metadata form (title, authors, keywords, license)
-☐ Link to GitHub repository
-☐ Request DOI assignment
-☐ Update manuscript with Zenodo DOI
+GITHUB REPOSITORY (COMPLETED)
+═══════════════════════════════
+☑ Code repository public at https://github.com/kirtii56/Agnn
+☑ All analysis code committed
+☑ README.md with installation instructions
+☑ MIT License included
+☑ Documentation complete
+☑ Figures generated and committed
+☑ Repository ready for arXiv supplementary material link
 
 ARXIV SUBMISSION
 ═════════════════
@@ -147,7 +147,7 @@ ARXIV SUBMISSION
 ☐ Update metadata.json with arXiv ID
 
 ═══════════════════════════════════════════════════════════════
-STATUS: ✅ ALL ITEMS VERIFIED - READY FOR SUBMISSION
-NEXT STEP: Submit to PRD via https://journals.aps.org/prd/
-TARGET DATE: October 28, 2025
+STATUS: ✅ ARXIV PREPRINT READY
+NEXT STEP: ArXiv submission (astro-ph.HE)
+COMPLETED: November 3, 2025
 ═══════════════════════════════════════════════════════════════

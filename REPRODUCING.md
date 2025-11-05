@@ -1,7 +1,7 @@
 # Reproducing Results
 
 **Version:** 2.0-FINAL
-**Last Updated:** October 24, 2025
+**Last Updated:** November 3, 2025
 **Estimated Time:** 8-12 hours (full MCMC analysis)
 
 ---
@@ -103,7 +103,7 @@ python code/monte_carlo_sampling.py
 **Parameters:**
 - **Chains:** 5 independent chains
 - **Samples:** 10^6 samples per chain
-- **Random seeds:** {42, 137, 271, 314, 628}
+- **Random seed:** Default 42 (configurable via `--seed` flag)
 - **Output:** `data/mc_posterior_samples.h5` (~500 MB)
 
 **Convergence Criteria:**
@@ -280,8 +280,8 @@ Edit `code/monte_carlo_sampling.py`:
 n_walkers = 32  # Default: 32
 n_steps = 10000  # Default: 10000
 
-# Random seeds
-seeds = [42, 137, 271, 314, 628]
+# Random seed (configurable via --seed flag)
+np.random.seed(42)  # Default: 42
 
 # Priors
 log10(M/M_⊙) ~ U(8, 10)   # Black hole mass
@@ -351,7 +351,7 @@ If you encounter issues:
 1. Check [docs/submission_checklist.txt](docs/submission_checklist.txt)
 2. Review error messages in terminal output
 3. Open an issue on GitHub: https://github.com/kirtii56/Agnn/issues
-4. Email: kirti.patidar@institution.edu
+4. Email: kirti.research56@gmail.com
 
 ---
 
@@ -370,6 +370,6 @@ For code documentation:
 
 ---
 
-**Last Updated:** October 24, 2025
+**Last Updated:** November 3, 2025
 **Version:** 2.0-FINAL
-**Status:** ✅ Ready for Submission
+**Status:** ✅ ArXiv Preprint Ready

@@ -79,7 +79,7 @@ def log_likelihood(theta, data_constraints):
     sigma = 10**log_sigma
 
     # Calculate model predictions
-    s_collision = (1e4)**2  # Example collision energy
+    s_collision = (1e8)**2  # AGN jet collision energy (GeV)^2, ~10^17-10^18 eV
     Lambda = eft_validity_cutoff(M_X, g_eff)
     xsec = eft_contact_operator_xsec(s_collision, M_X, Lambda, g_eff)
 
