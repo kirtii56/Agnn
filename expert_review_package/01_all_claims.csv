@@ -1,0 +1,31 @@
+Claim_Number,Claim_Statement,Location_in_Paper,Supporting_Code,Value_Range,Uncertainty
+1,"Maximum electron Lorentz factor γ_e,max ~ 10^6-10^7","Section 2.2.1, Eq. 6",grmhd_acceleration.py:44-66,10^6 - 10^7,Factor of 10
+2,"Maximum proton Lorentz factor γ_p,max ~ 10^9-10^10","Section 2.2.2, Eq. 8",grmhd_acceleration.py:68-88,10^9 - 10^10,Factor of 10
+3,"Center-of-mass energies √s ~ 10^17-10^18 eV","Section 2.3, Eq. 9",Manuscript line 127,1.9 × 10^18 eV,Factor of 10
+4,"EFT valid by factor 10^9","Section 2.3, Eq. 11",Manuscript line 143,√s / (0.1M_Pl) ~ 10^-9,Well-established
+5,"Blandford-Znajek power P_BZ ~ 10^45-10^47 erg/s","Section 2.1, Eq. 2",Manuscript line 70,10^45 - 10^47 erg/s,Factor of 100
+6,"MAD efficiency η ≈ 30% (a=0.5), η ≈ 140% (a=0.99)","Section 2.1",Manuscript line 67,30% - 140%,Factor of 5
+7,"Production rates Ṅ_X ~ 10^10-10^15 s^-1 per AGN","Section 5.1, Table 1",Monte Carlo output,10^10 - 10^15 s^-1,Factor of 10^3
+8,"Cosmic abundance Ω_X^AGN ≲ 10^-10 Ω_DM","Section 5.2, Eq. 45",Manuscript line 293,< 10^-10 Ω_DM,Order of magnitude
+9,"Factor-of-10^3 systematic uncertainties","Abstract, Section 5.5",Manuscript line 23,Factor of 1000,Acknowledged
+10,"PDF corrections reduce rates by 30-100×","Section 3.3",pdf_integration.py:110,30-100× reduction,Factor of 3
+11,"Parton luminosity L_gg ≈ 10^-3-10^-4 at τ ~ 10^-2","Section 2.3",Manuscript line 138,10^-3 - 10^-4,CT18 uncertainties
+12,"TeV blazars require γ_e ≳ 3 × 10^5","Section 2.2.1",Fermi-LAT Ajello+ 2017,≥ 3 × 10^5,Observational
+13,"UHECR maximum rigidities E_cut ≲ 5 EeV","Section 2.2.2",Auger 2020,≤ 5 × 10^18 eV,Observational
+14,"Magnetization parameter σ = 10-100","Throughout",grmhd_acceleration.py:21,10 - 100,Factor of 10
+15,"Magnetic field B = 10^2-10^4 Gauss","Section 2.1",Throughout code,100 - 10000 G,Factor of 100
+16,"EFT cross section σ(s) ~ C_i^2 s^2/M_Pl^4","Section 3.1, Eq. 14",eft_cross_sections.py:59,Scaling law,Factor of 10^6 (C_i dependent)
+17,"EFT coupling C_i = 10^-3 to 1","Section 3.4",monte_carlo_sampling.py:49,0.001 - 1.0,Factor of 1000
+18,"AGN lifetime ~ 10^7 yr","Section 5.2",Manuscript line 290,10^7 years,Factor of 3
+19,"Cosmic AGN population ~ 10^6 sources","Section 5.2",Manuscript line 290,10^6 AGN,Factor of 3
+20,"UHDM optical depth τ_X ~ 10^-14 << 1","Section 5.3, Eq. 47",Manuscript line 305,10^-14,Safe escape
+21,"Escape velocity v_esc ~ 0.1c","Section 5.3, Eq. 48",Manuscript line 311,0.1c,Factor of 2
+22,"Thermalization time t_therm ~ 10^21 s >> t_cross ~ 10^6 s","Section 5.3, Eq. 49",Manuscript line 318,10^21 s vs 10^6 s,15 orders separation
+23,"CTA: ~10× improved sensitivity above 100 GeV","Section 5.4.1",Manuscript line 328,10× improvement,Projected
+24,"IceCube-Gen2: ~10× neutrino sensitivity","Section 5.4.1",Manuscript line 330,10× improvement,Projected
+25,"LISA detects ~100 SMBH mergers/year","Section 5.4.2",Manuscript line 332,100/year,LISA projections
+26,"Burst production N_X^burst ~ 10^21","Section 5.4.2, Eq. 50",Manuscript line 336,10^21 particles,Factor of 10^3
+27,"Direct detection requires σ_X ≳ 3 × 10^-16 cm^2","Section 5.4.3, Eq. 56",Manuscript line 353,≥ 3 × 10^-16 cm^2,14 orders above weak scale
+28,"Energy budget constraint Ṅ_X < 6 × 10^17 s^-1","Section 4.1, Eq. 36",Manuscript line 236,< 6 × 10^17 s^-1,Factor of 10
+29,"IceCube limits blazars to ≤11-15% of diffuse ν flux","Section 4.2",IceCube 2024,11-15%,Observational
+30,"Photopion optical depth f_pγ < 0.01","Section 4.2",Manuscript line 248,< 0.01,Consistent with optically thin jets

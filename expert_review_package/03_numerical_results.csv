@@ -1,0 +1,47 @@
+Category,Parameter,Value,Units,Uncertainty,Source
+Lorentz_Factors,gamma_e_max,1e6 - 1e7,dimensionless,Factor of 10,"Eq. 6, grmhd_acceleration.py"
+Lorentz_Factors,gamma_p_max,1e9 - 1e10,dimensionless,Factor of 10,"Eq. 8, grmhd_acceleration.py"
+Collision_Energy,sqrt_s_pp,1.9e18,eV,Factor of 10,Eq. 9
+Collision_Energy,sqrt_s_ee,1e12,eV,Factor of 10,Calculated from gamma_e
+EFT_Validity,sqrt_s_over_Planck,1e-9,dimensionless,Well-constrained,Eq. 11
+Jet_Power,P_BZ_min,1e45,erg/s,Factor of 100,Eq. 2
+Jet_Power,P_BZ_max,1e47,erg/s,Factor of 100,Eq. 2
+Efficiency,eta_a05,0.30,dimensionless,Factor of 2,"Tchekhovskoy+ 2010, MAD"
+Efficiency,eta_a099,1.40,dimensionless,Factor of 2,"Tchekhovskoy+ 2010, MAD"
+Production_Rate,Ndot_X_1e15eV,8e12,s^-1,Factor of 250,Table 1
+Production_Rate,Ndot_X_1e16eV,2e10,s^-1,Factor of 200,Table 1
+Production_Rate,Ndot_X_1e17eV,5e7,s^-1,Factor of 300,Table 1
+Production_Rate,Ndot_X_1e18eV,1e5,s^-1,Factor of 300,Table 1
+Cosmic_Abundance,Omega_X_over_Omega_DM,1e-10,dimensionless,Order of magnitude,Eq. 45
+Magnetic_Field,B_min,100,Gauss,Factor of 100,MCMC prior range
+Magnetic_Field,B_max,10000,Gauss,Factor of 100,MCMC prior range
+Magnetization,sigma_min,10,dimensionless,Factor of 10,GRMHD simulations
+Magnetization,sigma_max,100,dimensionless,Factor of 10,GRMHD simulations
+EFT_Coupling,C_i_min,0.001,dimensionless,Factor of 1000,MCMC prior range
+EFT_Coupling,C_i_max,1.0,dimensionless,Factor of 1000,MCMC prior range
+AGN_Lifetime,t_AGN,1e7,years,Factor of 3,Standard assumption
+AGN_Population,N_AGN,1e6,sources,Factor of 3,Luminosity function integration
+UHDM_Optical_Depth,tau_X,1e-14,dimensionless,Order of magnitude,Eq. 47
+Escape_Velocity,v_esc,0.1,c,Factor of 2,Eq. 48
+Thermalization_Time,t_therm,1e21,seconds,Order of magnitude,Eq. 49
+Crossing_Time,t_cross,1e6,seconds,Order of magnitude,Jet geometry
+Fermi_LAT_Limit,F_gamma_limit,1e-11,erg/cm^2/s,Factor of 3,"Ajello+ 2017, 3FHL"
+IceCube_Limit,F_nu_limit,1e-6,nu/cm^2/s,Factor of 3,IceCube 2024
+Auger_Cutoff,E_UHECR_cut,5e18,eV,Factor of 2,"Auger 2020, GZK"
+PDF_Luminosity,L_gg_tau_1e-2,1e-3 - 1e-4,GeV^-2,Factor of 3,"CT18 NNLO, Hou+ 2019"
+MCMC_Chains,N_chains,5,dimensionless,Exact,monte_carlo_sampling.py
+MCMC_Samples,N_samples_per_chain,1e6,dimensionless,Exact,monte_carlo_sampling.py
+MCMC_Convergence,Rhat,1.01,dimensionless,Converged,Gelman-Rubin diagnostic
+Random_Seeds,seed_1,42,dimensionless,Exact,Reproducibility
+Random_Seeds,seed_2,137,dimensionless,Exact,Reproducibility
+Random_Seeds,seed_3,271,dimensionless,Exact,Reproducibility
+Random_Seeds,seed_4,314,dimensionless,Exact,Reproducibility
+Random_Seeds,seed_5,628,dimensionless,Exact,Reproducibility
+Future_Improvement,CTA_sensitivity,10,factor,Projected,Section 5.4.1
+Future_Improvement,IceCube_Gen2_sensitivity,10,factor,Projected,Section 5.4.1
+Future_LISA,SMBH_mergers_per_year,100,events/year,Projected,"LISA projections, Amaro-Seoane+ 2017"
+Burst_Production,N_X_burst,1e21,particles,Factor of 1000,Eq. 50
+Direct_Detection_Threshold,sigma_X_min,3e-16,cm^2,Order of magnitude,Eq. 56
+Energy_Budget_Constraint,Ndot_X_max,6e17,s^-1,Factor of 10,Eq. 36
+IceCube_Blazar_Fraction,f_blazar_to_diffuse,0.11 - 0.15,dimensionless,Observational,IceCube 2024 stacking
+Photopion_Optical_Depth,f_p_gamma,0.01,dimensionless,Order of magnitude,Section 4.2
