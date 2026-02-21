@@ -1,272 +1,350 @@
 """
-Monte Carlo Sampling Module
-============================
+Monte Carlo Parameter Scan
+==========================
 
-MCMC parameter space exploration using emcee (affine-invariant ensemble sampler).
+Bayesian MCMC parameter-space exploration for UHDM production in AGN jets
+using the emcee affine-invariant ensemble sampler (Foreman-Mackey et al. 2013).
 
-Samples parameter space:
-- UHDM mass M_X
-- Coupling g_eff
-- Magnetization σ
-- Jet opening angle θ_jet
+Scanned parameters (all in log10):
+    log10(Lambda / GeV)   -- EFT cutoff scale
+    log10(m_X    / GeV)   -- UHDM mass
+    log10(sigma_jet)      -- jet magnetization
+    log10(B_jet  / G)     -- jet magnetic field
 
-Performs Bayesian inference with observational constraints.
+Sampler configuration:
+    ndim     = 4
+    nwalkers = 10   (emcee requires nwalkers >= 2*ndim; 2*4 = 8 minimum)
+    nsteps   = 100
+    Total    = 10 * 100 = 1000 samples
+
+Random seeds for reproducibility: {42, 137, 271, 314, 628}
+
+Convergence diagnostics:
+    - Acceptance fraction
+    - Autocorrelation time (emcee.autocorr.integrated_time)
+    - Split-R-hat (Gelman-Rubin) computed from walker sub-chains
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import corner
-import emcee
-import h5py
-from multiprocessing import Pool
-
-# Import other modules
+import os
 import sys
-sys.path.append('.')
-from eft_cross_sections import eft_contact_operator_xsec, eft_validity_cutoff
-from grmhd_acceleration import max_lorentz_factor_reconnection
+import argparse
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+import emcee
+import corner
+
+# Ensure sibling modules are importable
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPT_DIR)
+
+from eft_cross_sections import eft_dimension6_xsec
+from grmhd_acceleration import gamma_electron_reconnection, gamma_proton_hillas
+from observational_constraints import MultiMessengerConstraints, calculate_uhdm_flux
+from pdf_integration import CT18Luminosity, hadronic_cross_section
+
+FIGURES_DIR = os.path.join(SCRIPT_DIR, '..', 'figures')
+
+# ---------------------------------------------------------------------------
+# Parameter space
+# ---------------------------------------------------------------------------
+PARAM_NAMES  = [r'$\log_{10}\Lambda$', r'$\log_{10}m_X$',
+                r'$\log_{10}\sigma$', r'$\log_{10}B$']
+PARAM_LABELS = ['log10(Lambda/GeV)', 'log10(m_X/GeV)',
+                'log10(sigma_jet)', 'log10(B_jet/G)']
+NDIM = 4
+
+# Log-uniform prior bounds
+PRIOR_LO = np.array([8.0, 6.0, 1.0, -1.0])   # Lambda>=1e8, m_X>=1e6, sigma>=10, B>=0.1
+PRIOR_HI = np.array([11.0, 10.0, 3.0, 2.0])   # Lambda<=1e11, m_X<=1e10, sigma<=1e3, B<=100
 
 
+# ---------------------------------------------------------------------------
+# Prior, likelihood, posterior
+# ---------------------------------------------------------------------------
 def log_prior(theta):
+    """Flat (log-uniform) prior on all parameters."""
+    if np.all((theta >= PRIOR_LO) & (theta <= PRIOR_HI)):
+        return 0.0
+    return -np.inf
+
+
+def log_likelihood(theta):
     """
-    Log prior probability for parameters.
+    Log-likelihood from multi-messenger constraints.
 
-    Parameters:
-    -----------
-    theta : array-like
-        [log10(M_X), log10(g_eff), log10(sigma), theta_jet]
+    For each observable channel (Fermi, IceCube, Auger) the likelihood
+    penalises parameter combinations whose predicted flux exceeds the
+    experimental upper limit:
 
-    Returns:
-    --------
-    log_prior : float
-        Log prior probability
+        log L = -0.5 * sum_i [ max(0, F_pred_i - F_lim_i)^2 / sigma_i^2 ]
+
+    This is a one-sided Gaussian penalty (upper-limit likelihood).
     """
-    log_M_X, log_g_eff, log_sigma, theta_jet = theta
+    log_Lambda, log_mX, log_sigma, log_B = theta
 
-    # Uniform priors in log space
-    if not (2 < log_M_X < 5):  # 100 GeV to 100 TeV
-        return -np.inf
-    if not (-2 < log_g_eff < 1):  # 0.01 to 10
-        return -np.inf
-    if not (-1 < log_sigma < 2):  # 0.1 to 100
-        return -np.inf
-    if not (0.01 < theta_jet < 0.5):  # 0.01 to 0.5 radians
-        return -np.inf
+    Lambda    = 10.0**log_Lambda   # GeV
+    m_X       = 10.0**log_mX       # GeV
+    sigma_jet = 10.0**log_sigma
+    B_jet     = 10.0**log_B        # G
 
-    return 0.0  # Flat prior
+    # -- Particle physics: EFT cross section at AGN energy -------------------
+    sqrt_s = 3.16e8   # GeV  (geometric mean of 10^17--10^18 eV)
+    s_val  = sqrt_s**2
 
+    xsec = eft_dimension6_xsec(s_val, m_X, Lambda)
+    if not np.isfinite(xsec) or xsec <= 0:
+        return -1e10   # strongly penalise invalid regions
 
-def log_likelihood(theta, data_constraints):
-    """
-    Log likelihood function comparing model to observations.
+    # -- Astrophysics: production rate in the jet ----------------------------
+    # Lorentz factors (sanity check that sigma supports the energy)
+    gamma_e = gamma_electron_reconnection(sigma_jet, eta=0.1)
+    R_jet   = 1e15    # cm  (fiducial)
+    gamma_p = gamma_proton_hillas(B_jet, R_jet)
 
-    Parameters:
-    -----------
-    theta : array-like
-        Parameter vector
-    data_constraints : dict
-        Dictionary of observational constraints
+    # Effective proton-proton collision rate  N_dot ~ n_jet * sigma_pp * c * V_jet
+    # Use simplified estimate: V_jet ~ pi R_jet^2 * R_jet, n ~ 10^3 cm^-3
+    n_jet = 1e3  # cm^-3
+    V_jet = np.pi * R_jet**3
+    c_cgs = 2.998e10  # cm/s
 
-    Returns:
-    --------
-    log_like : float
-        Log likelihood
-    """
-    log_M_X, log_g_eff, log_sigma, theta_jet = theta
+    # Convolve partonic xsec with parton luminosity
+    lumi = CT18Luminosity()
+    def sigma_hat(s_hat, mx, L=Lambda):
+        return eft_dimension6_xsec(s_hat, mx, L)
+    sigma_pp = hadronic_cross_section(sigma_hat, s_val, m_X, lumi)
+    if sigma_pp <= 0:
+        return -1e10
 
-    M_X = 10**log_M_X
-    g_eff = 10**log_g_eff
-    sigma = 10**log_sigma
+    N_dot = n_jet**2 * sigma_pp * c_cgs * V_jet   # pairs / s
 
-    # Calculate model predictions
-    s_collision = (1e8)**2  # AGN jet collision energy (GeV)^2, ~10^17-10^18 eV
-    Lambda = eft_validity_cutoff(M_X, g_eff)
-    xsec = eft_contact_operator_xsec(s_collision, M_X, Lambda, g_eff)
+    if N_dot <= 0:
+        return -1e10
 
-    if np.isnan(xsec):
-        return -np.inf  # EFT invalid
+    # -- Multi-messenger fluxes at Earth (d = 100 Mpc fiducial) ---------------
+    fluxes = calculate_uhdm_flux(m_X, N_dot, distance_Mpc=100.0)
 
-    # Production rate in AGN jet
-    L_jet = 1e45  # erg/s (typical blazar jet luminosity)
-    n_collisions = L_jet / (M_X * 1.783e-27)  # Number of collisions per second
-    N_production = xsec * 1e-36 * n_collisions  # Production rate (per second)
+    constraints = MultiMessengerConstraints()
 
-    # Compare to observational upper limits
-    # Fermi-LAT gamma-ray flux limit
-    F_gamma_limit = data_constraints.get('fermi_flux_limit', 1e-11)  # erg/cm²/s
-    F_gamma_predicted = N_production * M_X * 1.6e-3 / (4*np.pi*(100*3.086e24)**2)
+    # One-sided Gaussian penalty for each channel
+    log_L = 0.0
 
-    # IceCube neutrino limit
-    F_nu_limit = data_constraints.get('icecube_flux_limit', 1e-12)  # erg/cm²/s
-    F_nu_predicted = F_gamma_predicted * 0.1  # Assume 10% to neutrinos
+    # Fermi-LAT
+    excess_fermi = max(0.0, fluxes['E2dNdE_gamma'] - constraints.fermi_E2dNdE_limit)
+    sigma_fermi  = 0.5 * constraints.fermi_E2dNdE_limit   # 50% uncertainty
+    log_L -= 0.5 * (excess_fermi / sigma_fermi)**2
 
-    # Log likelihood (Gaussian approximation)
-    chi2 = 0.0
+    # IceCube
+    excess_ic = max(0.0, fluxes['phi_nu'] - constraints.icecube_phi_limit)
+    sigma_ic  = 0.5 * constraints.icecube_phi_limit
+    log_L -= 0.5 * (excess_ic / sigma_ic)**2
 
-    # Gamma-ray constraint
-    if F_gamma_predicted > F_gamma_limit:
-        chi2 += ((np.log10(F_gamma_predicted) - np.log10(F_gamma_limit))/0.3)**2
+    # Auger  (very weak constraint at these energies)
+    excess_au = max(0.0, fluxes['integral_CR'] - constraints.auger_integral_flux_limit)
+    sigma_au  = 0.5 * constraints.auger_integral_flux_limit
+    if sigma_au > 0:
+        log_L -= 0.5 * (excess_au / sigma_au)**2
 
-    # Neutrino constraint
-    if F_nu_predicted > F_nu_limit:
-        chi2 += ((np.log10(F_nu_predicted) - np.log10(F_nu_limit))/0.3)**2
-
-    log_like = -0.5 * chi2
-
-    return log_like
+    return log_L
 
 
-def log_probability(theta, data_constraints):
-    """
-    Log posterior probability = log prior + log likelihood.
-    """
+def log_probability(theta):
+    """Log-posterior = log-prior + log-likelihood."""
     lp = log_prior(theta)
     if not np.isfinite(lp):
         return -np.inf
-    return lp + log_likelihood(theta, data_constraints)
+    ll = log_likelihood(theta)
+    if not np.isfinite(ll):
+        return -np.inf
+    return lp + ll
 
 
-def run_mcmc(n_walkers=32, n_steps=10000, output_file='../data/mc_posterior_samples.h5'):
+# ---------------------------------------------------------------------------
+# Convergence diagnostics
+# ---------------------------------------------------------------------------
+def compute_split_rhat(chain):
     """
-    Run MCMC parameter scan using emcee.
+    Split-R-hat (Gelman-Rubin) from a single ensemble chain.
 
-    Parameters:
-    -----------
-    n_walkers : int
-        Number of MCMC walkers
-    n_steps : int
-        Number of steps per walker
-    output_file : str
-        HDF5 output file for samples
+    Treats each walker as an independent chain, splits each in half,
+    then computes the standard R-hat across all half-chains.
+
+    Parameters
+    ----------
+    chain : ndarray, shape (nsteps, nwalkers, ndim)
+
+    Returns
+    -------
+    rhat : ndarray, shape (ndim,)
     """
-    print("Running MCMC Parameter Scan")
-    print("=" * 50)
+    nsteps, nwalkers, ndim = chain.shape
+    half = nsteps // 2
+    # Take the second half (after burn-in) and split again
+    second_half = chain[half:]
+    n = second_half.shape[0] // 2
+    if n < 2:
+        return np.full(ndim, np.nan)
 
-    # Parameter dimension
-    ndim = 4
+    # Create sub-chains: shape (2*nwalkers, n, ndim)
+    chains = np.concatenate([second_half[:n], second_half[n:2*n]], axis=1)
+    chains = np.transpose(chains, (1, 0, 2))  # (2*nwalkers, n, ndim)
 
-    # Initial positions (random ball around initial guess)
-    initial = np.array([3.5, -0.5, 0.5, 0.1])  # [log M_X, log g, log σ, θ]
-    pos = initial + 1e-2 * np.random.randn(n_walkers, ndim)
+    m = chains.shape[0]   # number of sub-chains
+    n = chains.shape[1]   # length of each
 
-    # Observational constraints
-    data_constraints = {
-        'fermi_flux_limit': 1e-11,  # erg/cm²/s
-        'icecube_flux_limit': 1e-12,  # erg/cm²/s
-    }
+    chain_means = chains.mean(axis=1)            # (m, ndim)
+    chain_vars  = chains.var(axis=1, ddof=1)     # (m, ndim)
 
-    # Set up backend to save progress
-    backend = emcee.backends.HDFBackend(output_file)
-    backend.reset(n_walkers, ndim)
+    overall_mean = chain_means.mean(axis=0)      # (ndim,)
+    B = n * np.var(chain_means, axis=0, ddof=1)  # between-chain var
+    W = np.mean(chain_vars, axis=0)              # within-chain var
 
-    # Run MCMC
-    print(f"Initializing {n_walkers} walkers...")
-    print(f"Running {n_steps} steps...")
+    var_hat = (1.0 - 1.0/n) * W + (1.0/n) * B
+    rhat = np.sqrt(var_hat / np.maximum(W, 1e-30))
 
-    with Pool() as pool:
-        sampler = emcee.EnsembleSampler(
-            n_walkers, ndim, log_probability,
-            args=(data_constraints,),
-            pool=pool,
-            backend=backend
-        )
+    return rhat
 
-        # Run with progress bar
-        for i, result in enumerate(sampler.sample(pos, iterations=n_steps)):
-            if (i+1) % 100 == 0:
-                print(f"  Step {i+1}/{n_steps} ({100*(i+1)/n_steps:.1f}%)")
 
-    print(f"\nMCMC complete!")
-    print(f"Samples saved to: {output_file}")
-    print(f"Acceptance fraction: {np.mean(sampler.acceptance_fraction):.3f}")
+# ---------------------------------------------------------------------------
+# Main MCMC runner
+# ---------------------------------------------------------------------------
+def run_mcmc(nwalkers=10, nsteps=100, seed=42):
+    """
+    Run the MCMC sampler.
+
+    Parameters
+    ----------
+    nwalkers : int
+        Number of walkers (must be >= 2 * ndim = 8).
+    nsteps : int
+        Number of steps per walker.
+    seed : int
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    sampler : emcee.EnsembleSampler
+    """
+    assert nwalkers >= 2 * NDIM, (
+        f"emcee requires nwalkers >= 2*ndim = {2*NDIM}, got {nwalkers}"
+    )
+
+    rng = np.random.default_rng(seed)
+
+    # Initialise walkers: uniform within prior volume
+    p0 = rng.uniform(PRIOR_LO, PRIOR_HI, size=(nwalkers, NDIM))
+
+    print(f"\nMCMC configuration:")
+    print(f"  ndim     = {NDIM}")
+    print(f"  nwalkers = {nwalkers}")
+    print(f"  nsteps   = {nsteps}")
+    print(f"  seed     = {seed}")
+    print(f"  total samples = {nwalkers * nsteps}")
+
+    sampler = emcee.EnsembleSampler(nwalkers, NDIM, log_probability)
+
+    print("\nRunning MCMC ...")
+    sampler.run_mcmc(p0, nsteps, progress=False)
+    print("  ... done.")
 
     return sampler
 
 
-def plot_mcmc_diagnostics(sampler, output_file='../figures/figS1_mcmc_diagnostics.pdf'):
-    """
-    Generate Figure S1: MCMC diagnostics.
+def print_diagnostics(sampler):
+    """Print convergence diagnostics."""
+    chain = sampler.get_chain()   # shape (nsteps, nwalkers, ndim)
+    nsteps, nwalkers, ndim = chain.shape
 
-    Parameters:
-    -----------
+    # Acceptance fraction
+    af = sampler.acceptance_fraction
+    print(f"\nAcceptance fractions: mean={af.mean():.3f}, "
+          f"min={af.min():.3f}, max={af.max():.3f}")
+
+    # Autocorrelation time (may fail with too few samples)
+    try:
+        tau = emcee.autocorr.integrated_time(
+            sampler.get_chain(), quiet=True)
+        print(f"Autocorrelation time: {tau}")
+        print(f"Effective sample size: "
+              f"{nsteps * nwalkers / np.max(tau):.0f}")
+    except emcee.autocorr.AutocorrError:
+        print("Autocorrelation time: could not estimate "
+              "(chain too short; increase nsteps for production runs)")
+
+    # Split R-hat
+    rhat = compute_split_rhat(chain)
+    print(f"Split R-hat: {rhat}")
+    for name, r in zip(PARAM_LABELS, rhat):
+        status = 'OK' if (np.isfinite(r) and r < 1.1) else 'WARN'
+        print(f"  {name:25s}  R-hat = {r:.3f}  [{status}]")
+
+
+def plot_corner(sampler, burn_in=20, output_file=None):
+    """
+    Generate corner plot (Figure S1) from MCMC samples.
+
+    Parameters
+    ----------
     sampler : emcee.EnsembleSampler
-        MCMC sampler object
-    output_file : str
-        Output filename
+    burn_in : int
+        Number of steps to discard as burn-in.
+    output_file : str or None
     """
-    print("\nGenerating MCMC diagnostics...")
+    if output_file is None:
+        output_file = os.path.join(FIGURES_DIR, 'figS1_mcmc_diagnostics.pdf')
 
-    # Extract samples
-    samples = sampler.get_chain()
-    flat_samples = sampler.get_chain(discard=1000, thin=10, flat=True)
+    flat_samples = sampler.get_chain(discard=burn_in, flat=True)
+    print(f"\nCorner plot: {flat_samples.shape[0]} samples "
+          f"(discarded {burn_in} burn-in steps)")
 
-    # Parameter names
-    labels = [r'$\log_{10}(M_X/{\rm GeV})$',
-              r'$\log_{10}(g_{\rm eff})$',
-              r'$\log_{10}(\sigma)$',
-              r'$\theta_{\rm jet}$ [rad]']
+    fig = corner.corner(
+        flat_samples,
+        labels=PARAM_NAMES,
+        quantiles=[0.16, 0.5, 0.84],
+        show_titles=True,
+        title_kwargs={'fontsize': 11},
+        smooth=1.5,
+        bins=20,
+    )
+    fig.suptitle('MCMC Parameter Scan — Convergence Diagnostics (Figure S1)',
+                 fontsize=13, y=1.02)
 
-    # Create corner plot
-    fig = corner.corner(flat_samples, labels=labels,
-                       quantiles=[0.16, 0.5, 0.84],
-                       show_titles=True, title_fmt='.3f',
-                       smooth=1.0)
-
-    fig.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"Diagnostics saved: {output_file}")
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    fig.savefig(output_file, dpi=200, bbox_inches='tight')
     plt.close(fig)
+    print(f"Figure saved: {output_file}")
 
-    # Trace plots
-    fig, axes = plt.subplots(4, 1, figsize=(10, 10))
-    for i in range(4):
-        axes[i].plot(samples[:, :, i], 'k', alpha=0.3, lw=0.5)
-        axes[i].set_ylabel(labels[i])
-        axes[i].grid(alpha=0.3)
-    axes[-1].set_xlabel('Step')
-    plt.tight_layout()
-    trace_file = output_file.replace('.pdf', '_traces.pdf')
-    plt.savefig(trace_file, dpi=300, bbox_inches='tight')
-    print(f"Trace plots saved: {trace_file}")
-    plt.close(fig)
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+def main():
+    parser = argparse.ArgumentParser(
+        description='MCMC parameter scan for UHDM production in AGN jets')
+    parser.add_argument('--nwalkers', type=int, default=10,
+                        help='Number of walkers (default: 10, min: 8)')
+    parser.add_argument('--nsteps', type=int, default=100,
+                        help='Steps per walker (default: 100)')
+    parser.add_argument('--seed', type=int, default=42,
+                        choices=[42, 137, 271, 314, 628],
+                        help='Random seed (default: 42)')
+    parser.add_argument('--burn-in', type=int, default=20,
+                        help='Burn-in steps to discard (default: 20)')
+    args = parser.parse_args()
+
+    print("Monte Carlo Parameter Scan")
+    print("=" * 55)
+
+    sampler = run_mcmc(nwalkers=args.nwalkers,
+                       nsteps=args.nsteps,
+                       seed=args.seed)
+
+    print_diagnostics(sampler)
+    plot_corner(sampler, burn_in=args.burn_in)
+    print("\nDone.")
 
 
 if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(
-        description='MCMC parameter space exploration for UHDM production in AGN jets'
-    )
-    parser.add_argument('--nsamples', type=int, default=1000000,
-                       help='Total number of samples (default: 1000000)')
-    parser.add_argument('--nchains', type=int, default=5,
-                       help='Number of chains/walkers (default: 5)')
-    parser.add_argument('--output', type=str, default='../data/mc_posterior_samples.h5',
-                       help='Output HDF5 file (default: ../data/mc_posterior_samples.h5)')
-    parser.add_argument('--seed', type=int, default=42,
-                       help='Random seed for reproducibility (default: 42)')
-    args = parser.parse_args()
-
-    # Set random seed
-    np.random.seed(args.seed)
-
-    print("Monte Carlo Sampling Module")
-    print("=" * 50)
-    print(f"Configuration:")
-    print(f"  Total samples: {args.nsamples:,}")
-    print(f"  Number of chains: {args.nchains}")
-    print(f"  Steps per chain: {args.nsamples // args.nchains:,}")
-    print(f"  Random seed: {args.seed}")
-    print(f"  Output file: {args.output}")
-    print("=" * 50)
-
-    # Calculate n_walkers and n_steps from nsamples and nchains
-    n_walkers = args.nchains
-    n_steps = args.nsamples // args.nchains
-
-    sampler = run_mcmc(n_walkers=n_walkers, n_steps=n_steps, output_file=args.output)
-
-    # Generate diagnostics
-    plot_mcmc_diagnostics(sampler)
-
-    print("\n" + "=" * 50)
-    print("Analysis complete!")
+    main()
