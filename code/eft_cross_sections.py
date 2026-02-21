@@ -1,228 +1,230 @@
 """
 EFT Cross Section Module
-=========================
+========================
 
-Calculates effective field theory production cross sections for
-ultra-high-density matter (UHDM) at parton level.
+Computes production cross sections for ultra-heavy dark matter (UHDM)
+using an effective-field-theory contact interaction (dimension-6 operator).
 
-Implements contact interaction operators and validates EFT cutoff scales.
+    L_eff  =  (1 / Lambda^2)  (q-bar q)(X-bar X)
+
+Partonic cross section:
+
+    sigma_XX(s) = (s / Lambda^4) * (1 / (16 pi)) * beta(s, m_X)
+
+where beta = sqrt(1 - 4 m_X^2 / s) is the velocity factor, and the EFT
+is valid only when sqrt(s) < Lambda.
+
+Mass range  :  m_X    ~ 10^6  -- 10^10 GeV  (= 10^15 -- 10^19 eV)
+Cutoff range:  Lambda ~ 10^8  -- 10^11 GeV  (= 10^17 -- 10^20 eV)
 """
 
+import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scipy.integrate import quad
-from scipy.special import kn  # Modified Bessel function
 
-# Physical constants
-alpha_s = 0.118  # Strong coupling at M_Z
-GeV = 1.0  # Energy units
-pb = 1.0  # Cross section units (picobarn)
-GeV2_to_pb = 3.894e8  # Conversion factor
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+GeV2_to_cm2 = 3.894e-28          # 1 GeV^{-2} = 3.894 x 10^{-28} cm^2
+M_Planck    = 1.221e19            # Planck mass [GeV]
+
+# Project paths
+SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
+FIGURES_DIR = os.path.join(SCRIPT_DIR, '..', 'figures')
 
 
-def eft_contact_operator_xsec(s, M_X, Lambda_cutoff, g_eff=1.0):
+# ---------------------------------------------------------------------------
+# Cross-section calculation
+# ---------------------------------------------------------------------------
+def eft_dimension6_xsec(s, M_X, Lambda):
     """
-    Calculate EFT contact operator cross section.
+    EFT contact-interaction cross section for q qbar -> X Xbar.
 
-    For operator: (1/Λ²) (q̄q)(X̄X)
+    sigma = (s / Lambda^4) * (1 / (16 pi)) * beta
 
-    σ ~ (g_eff² / Λ⁴) * s
-
-    Parameters:
-    -----------
-    s : float
-        Center-of-mass energy squared (GeV²)
+    Parameters
+    ----------
+    s : float or array
+        Partonic centre-of-mass energy squared [GeV^2].
     M_X : float
-        UHDM particle mass (GeV)
-    Lambda_cutoff : float
-        EFT cutoff scale (GeV)
-    g_eff : float
-        Effective coupling (default 1.0)
-
-    Returns:
-    --------
-    xsec : float
-        Cross section in pb
-    """
-    if s < 4 * M_X**2:
-        return 0.0  # Below threshold
-
-    # EFT validity check
-    if np.sqrt(s) > Lambda_cutoff:
-        # EFT breaks down, return NaN or apply form factor
-        return np.nan
-
-    # Phase space factor
-    beta = np.sqrt(1 - 4*M_X**2/s)
-
-    # Contact operator cross section
-    xsec = (g_eff**2 / Lambda_cutoff**4) * s * beta * GeV2_to_pb
-
-    return xsec
-
-
-def s_channel_resonance_xsec(s, M_X, M_mediator, Gamma_mediator, g_q=1.0, g_X=1.0):
-    """
-    Calculate s-channel resonance production cross section.
-
-    pp → Z' → XX
-
-    Parameters:
-    -----------
-    s : float
-        Center-of-mass energy squared (GeV²)
-    M_X : float
-        UHDM particle mass (GeV)
-    M_mediator : float
-        Mediator mass (GeV)
-    Gamma_mediator : float
-        Mediator width (GeV)
-    g_q : float
-        Quark coupling
-    g_X : float
-        UHDM coupling
-
-    Returns:
-    --------
-    xsec : float
-        Cross section in pb
-    """
-    if s < 4 * M_X**2:
-        return 0.0
-
-    beta = np.sqrt(1 - 4*M_X**2/s)
-
-    # Breit-Wigner propagator
-    BW = (s * Gamma_mediator**2) / ((s - M_mediator**2)**2 +
-                                     M_mediator**2 * Gamma_mediator**2)
-
-    xsec = (np.pi * g_q**2 * g_X**2 / s) * BW * beta * GeV2_to_pb
-
-    return xsec
-
-
-def eft_validity_cutoff(M_X, coupling=1.0, relative_correction=0.1):
-    """
-    Estimate EFT validity cutoff scale.
-
-    Λ ~ M_X / sqrt(g * relative_correction)
-
-    EFT valid when Q² << Λ²
-
-    Parameters:
-    -----------
-    M_X : float
-        UHDM mass (GeV)
-    coupling : float
-        Coupling strength
-    relative_correction : float
-        Acceptable relative correction (default 10%)
-
-    Returns:
-    --------
+        UHDM particle mass [GeV].
     Lambda : float
-        Cutoff scale (GeV)
+        EFT cutoff scale [GeV].
+
+    Returns
+    -------
+    xsec : float or array
+        Cross section [cm^2].  Returns 0 below threshold, NaN when EFT
+        is invalid (sqrt(s) > Lambda).
     """
-    Lambda = M_X / np.sqrt(coupling * relative_correction)
-    return Lambda
+    s = np.asarray(s, dtype=float)
+    scalar = (s.ndim == 0)
+    s = np.atleast_1d(s)
+
+    xsec = np.zeros_like(s)
+
+    # Threshold check: s >= (2 m_X)^2
+    above_threshold = s >= 4.0 * M_X**2
+
+    # EFT validity: sqrt(s) < Lambda
+    eft_valid = np.sqrt(s) < Lambda
+
+    mask = above_threshold & eft_valid
+    if np.any(mask):
+        beta = np.sqrt(1.0 - 4.0 * M_X**2 / s[mask])
+        xsec[mask] = (s[mask] / Lambda**4) * (1.0 / (16.0 * np.pi)) * beta
+        xsec[mask] *= GeV2_to_cm2   # convert to cm^2
+
+    # Flag EFT-invalid region
+    xsec[above_threshold & ~eft_valid] = np.nan
+
+    if scalar:
+        return float(xsec[0])
+    return xsec
 
 
-def plot_eft_validity(output_file='../figures/fig1_eft_validity_corrected.pdf'):
+def eft_validity_check(sqrt_s, Lambda):
+    """Return True where the EFT is valid (sqrt(s) < Lambda)."""
+    return np.asarray(sqrt_s) < Lambda
+
+
+# ---------------------------------------------------------------------------
+# Figure 1 — EFT validity regions
+# ---------------------------------------------------------------------------
+def plot_eft_validity(output_file=None):
     """
-    Generate Figure 1: EFT validity regions (corrected).
+    Figure 1: EFT validity map in the (m_X, Lambda) plane.
+
+    Shaded region: EFT is valid (Lambda > 2 m_X, so the cutoff exceeds
+    the minimum partonic energy needed for pair production).
+    Horizontal lines: AGN jet collision energy band and Planck scale.
     """
-    M_X_array = np.logspace(2, 5, 100)  # 100 GeV to 100 TeV
+    if output_file is None:
+        output_file = os.path.join(FIGURES_DIR, 'fig1_eft_validity_corrected.pdf')
 
-    # Different coupling scenarios
-    couplings = [0.1, 1.0, 4*np.pi]  # Weak, O(1), Strong
-    labels = [r'$g = 0.1$', r'$g = 1$', r'$g = 4\pi$']
-    colors = ['blue', 'green', 'red']
+    m_X_arr = np.logspace(6, 10, 300)    # GeV
 
-    plt.figure(figsize=(10, 7))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    for coupling, label, color in zip(couplings, labels, colors):
-        Lambda_array = np.array([eft_validity_cutoff(M_X, coupling)
-                                 for M_X in M_X_array])
-        plt.loglog(M_X_array, Lambda_array, lw=2.5, label=label, color=color)
+    # Validity boundary:  Lambda >= 2 m_X  (production threshold)
+    ax.loglog(m_X_arr, 2.0 * m_X_arr, 'k-', lw=2,
+              label=r'$\Lambda = 2\,m_X$ (threshold)')
 
-    # LHC reach
-    plt.axhline(y=13000, color='orange', linestyle='--', lw=2,
-                label='LHC (13 TeV)', alpha=0.7)
+    # Fill valid region (above the line)
+    ax.fill_between(m_X_arr, 2.0 * m_X_arr, 1e13, alpha=0.12,
+                    color='green', label='EFT valid')
+
+    # AGN jet centre-of-mass energy band
+    ax.axhspan(1e8, 1e9, color='orange', alpha=0.2,
+               label=r'AGN $\sqrt{s}$ band ($10^{17}$--$10^{18}$ eV)')
 
     # Planck scale
-    plt.axhline(y=1.22e19, color='gray', linestyle=':', lw=2,
-                label='Planck Scale', alpha=0.5)
+    ax.axhline(M_Planck, color='grey', ls=':', lw=1.5,
+               label=r'$M_\mathrm{Pl} = 1.22\times10^{19}$ GeV')
 
-    # EFT validity region (shaded)
-    plt.fill_between(M_X_array, M_X_array, 1e20, alpha=0.1, color='gray',
-                     label='EFT Valid Region')
+    # Reference Lambda values
+    for L, col in [(1e8, 'C0'), (1e9, 'C1'), (1e10, 'C2'), (1e11, 'C3')]:
+        ax.axhline(L, color=col, ls='--', lw=1, alpha=0.6,
+                   label=rf'$\Lambda = 10^{{{int(np.log10(L))}}}$ GeV')
 
-    plt.xlabel(r'UHDM Mass $M_X$ [GeV]', fontsize=16)
-    plt.ylabel(r'EFT Cutoff $\Lambda$ [GeV]', fontsize=16)
-    plt.title('EFT Validity Analysis (Corrected)', fontsize=18)
-    plt.legend(fontsize=12, loc='upper left')
-    plt.grid(True, alpha=0.3, which='both')
-    plt.xlim(1e2, 1e5)
-    plt.ylim(1e2, 1e20)
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    ax.set_xlabel(r'UHDM mass $m_X$ [GeV]', fontsize=13)
+    ax.set_ylabel(r'EFT cutoff $\Lambda$ [GeV]', fontsize=13)
+    ax.set_title('EFT Validity Regions (Figure 1)', fontsize=14)
+    ax.set_xlim(1e6, 1e10)
+    ax.set_ylim(1e6, 1e13)
+    ax.legend(fontsize=9, loc='upper left')
+    ax.grid(True, which='both', alpha=0.2)
+
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    fig.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.close(fig)
     print(f"Figure saved: {output_file}")
-    plt.close()
 
 
-def plot_production_rate(M_X_array, xsec_array,
-                         output_file='../figures/fig3_production_rate.pdf'):
+# ---------------------------------------------------------------------------
+# Figure 3 — Production cross section vs mass
+# ---------------------------------------------------------------------------
+def plot_production_rate(output_file=None):
     """
-    Generate Figure 3: Production rate vs mass.
+    Figure 3: sigma_XX vs m_X at several Lambda values.
 
-    Parameters:
-    -----------
-    M_X_array : ndarray
-        Array of masses (GeV)
-    xsec_array : ndarray
-        Array of cross sections (pb)
-    output_file : str
-        Output filename
+    Uses a fixed sqrt(s) representative of AGN jet collisions.
     """
-    plt.figure(figsize=(10, 7))
-    plt.loglog(M_X_array, xsec_array, 'b-', lw=2.5)
-    plt.xlabel(r'UHDM Mass $M_X$ [GeV]', fontsize=16)
-    plt.ylabel(r'Production Cross Section [pb]', fontsize=16)
-    plt.title('UHDM Production Rate vs Mass', fontsize=18)
-    plt.grid(True, alpha=0.3, which='both')
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    if output_file is None:
+        output_file = os.path.join(FIGURES_DIR, 'fig3_production_rate.pdf')
+
+    m_X_arr = np.logspace(6, 10, 400)  # GeV
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    for Lambda, col, ls in [
+            (1e8,  'C0', '-'),
+            (1e9,  'C1', '--'),
+            (1e10, 'C2', '-.'),
+            (1e11, 'C3', ':')]:
+        # Fix sqrt(s) at the geometric mean of the AGN band
+        sqrt_s = 3.16e8  # GeV  (~10^{17.5} eV)
+        s_val  = sqrt_s**2
+        xsec = np.array([eft_dimension6_xsec(s_val, mx, Lambda)
+                          for mx in m_X_arr])
+
+        # Mask out zero / NaN for clean log-log plot
+        valid = np.isfinite(xsec) & (xsec > 0)
+        if np.any(valid):
+            ax.loglog(m_X_arr[valid], xsec[valid], ls, color=col, lw=2,
+                      label=rf'$\Lambda = 10^{{{int(np.log10(Lambda))}}}$ GeV')
+
+    ax.set_xlabel(r'UHDM mass $m_X$ [GeV]', fontsize=13)
+    ax.set_ylabel(r'$\sigma_{XX}$ [cm$^{2}$]', fontsize=13)
+    ax.set_title(
+        r'Production Cross Section at $\sqrt{s}=3.16\times10^{8}$ GeV '
+        '(Figure 3)', fontsize=12)
+    ax.legend(fontsize=11)
+    ax.grid(True, which='both', alpha=0.2)
+
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    fig.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.close(fig)
     print(f"Figure saved: {output_file}")
-    plt.close()
 
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 if __name__ == '__main__':
     print("EFT Cross Section Module")
-    print("=" * 50)
+    print("=" * 55)
 
-    # Example calculation
-    s = (14000)**2  # LHC energy (GeV²)
-    M_X = 1000  # GeV
-    Lambda = 5000  # GeV
+    # --- Example calculation ------------------------------------------------
+    m_X    = 1e8     # GeV  (=10^{17} eV)
+    Lambda = 1e10    # GeV  (=10^{19} eV)
+    sqrt_s = 3e8     # GeV
+    s_val  = sqrt_s**2
 
-    xsec_contact = eft_contact_operator_xsec(s, M_X, Lambda)
-    Lambda_cutoff = eft_validity_cutoff(M_X)
+    xsec = eft_dimension6_xsec(s_val, m_X, Lambda)
+    valid = eft_validity_check(sqrt_s, Lambda)
 
-    print(f"\nExample Parameters:")
-    print(f"  √s = {np.sqrt(s):.0f} GeV")
-    print(f"  M_X = {M_X} GeV")
-    print(f"  Λ = {Lambda} GeV")
-    print(f"\nResults:")
-    print(f"  σ (contact) = {xsec_contact:.2e} pb")
-    print(f"  Λ_cutoff (10% accuracy) = {Lambda_cutoff:.2e} GeV")
+    print(f"\nExample:")
+    print(f"  m_X    = {m_X:.1e} GeV")
+    print(f"  Lambda = {Lambda:.1e} GeV")
+    print(f"  sqrt(s)= {sqrt_s:.1e} GeV")
+    print(f"  EFT valid: {valid}")
+    print(f"  sigma_XX  = {xsec:.3e} cm^2")
 
-    # Generate figures
-    print(f"\nGenerating Figure 1...")
+    # --- Survey over mass range ---------------------------------------------
+    print("\nCross-section survey (Lambda = 1e10 GeV, sqrt_s = 3e8 GeV):")
+    for mx in [1e6, 1e7, 1e8, 1e9]:
+        xs = eft_dimension6_xsec(s_val, mx, Lambda)
+        tag = '' if np.isfinite(xs) else '  [EFT invalid or below threshold]'
+        print(f"  m_X = {mx:.0e} GeV  =>  sigma = {xs:.3e} cm^2{tag}")
+
+    # --- Generate figures ---------------------------------------------------
+    print("\nGenerating Figure 1 ...")
     plot_eft_validity()
-
-    # Example production rate plot
-    M_array = np.logspace(2, 4, 50)
-    xsec_array = np.array([eft_contact_operator_xsec((1e4)**2, M, 1e4)
-                           for M in M_array])
-    print(f"\nGenerating Figure 3...")
-    plot_production_rate(M_array, xsec_array)
+    print("Generating Figure 3 ...")
+    plot_production_rate()
+    print("Done.")

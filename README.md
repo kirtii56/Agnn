@@ -11,7 +11,7 @@
 
 ---
 
-## 📄 Abstract
+## Abstract
 
 This repository contains the complete research package for **"Ultra-Heavy Dark Matter Production in Active Galactic Nucleus Jets: A Falsifiable Multi-Messenger Framework"**.
 
@@ -21,7 +21,7 @@ We investigate whether AGN jets can produce ultra-heavy dark matter (UHDM) with 
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 UHDM_AGN_Paper_Final/
@@ -61,7 +61,7 @@ UHDM_AGN_Paper_Final/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -97,8 +97,8 @@ python code/grmhd_acceleration.py
 # EFT cross sections
 python code/eft_cross_sections.py
 
-# Monte Carlo scan (WARNING: takes 8-12 hours!)
-python code/monte_carlo_sampling.py
+# Monte Carlo scan (~1 min for default 10^3 samples)
+python code/monte_carlo_sampling.py --seed 42
 
 # Observational constraints
 python code/observational_constraints.py
@@ -109,8 +109,8 @@ python code/observational_constraints.py
 For complete step-by-step reproduction of all results:
 
 ```bash
-# Run full Monte Carlo analysis (requires ~8 hours on 16-core CPU)
-python code/monte_carlo_sampling.py
+# Run Monte Carlo analysis (~1 min default; use --nsteps 10000 for production)
+python code/monte_carlo_sampling.py --seed 42
 
 # Generate all figures
 python code/generate_figures.py --output figures/
@@ -120,11 +120,11 @@ cd manuscript/
 latexmk -pdf manuscript_final.tex
 ```
 
-**📖 See [REPRODUCING.md](REPRODUCING.md) for detailed instructions, troubleshooting, and validation steps.**
+See [REPRODUCING.md](REPRODUCING.md) for detailed instructions, troubleshooting, and validation steps.
 
 ---
 
-## 📊 Key Results
+## Key Results
 
 - **Maximum Lorentz factors**: $\gamma_{e,\rm max} \sim 10^6$--$10^7$ (electrons), $\gamma_{p,\rm max} \sim 10^9$--$10^{10}$ (protons)
 - **Center-of-mass energies**: $\sqrt{s} \sim 10^{17}$--$10^{18}$ eV (within EFT regime by $10^9$)
@@ -134,42 +134,69 @@ latexmk -pdf manuscript_final.tex
 
 ---
 
-## 🔬 Code Modules
+## Results Validation
+
+All figures are regenerated from code on each run.  To validate:
+
+```bash
+python code/grmhd_acceleration.py        && echo "GRMHD: OK"
+python code/eft_cross_sections.py        && echo "EFT: OK"
+python code/pdf_integration.py           && echo "PDF: OK"
+python code/observational_constraints.py && echo "Constraints: OK"
+python code/monte_carlo_sampling.py --seed 42 && echo "MCMC: OK"
+```
+
+Figures verified present after a full run:
+
+| Figure | File | Size |
+|--------|------|------|
+| 1 | `fig1_eft_validity_corrected.pdf` | 29 KB |
+| 2 | `fig2_gamma_max.pdf` | 25 KB |
+| 3 | `fig3_production_rate.pdf` | 22 KB |
+| 4 | `fig4_constraints.pdf` | 29 KB |
+| S1 | `figS1_mcmc_diagnostics.pdf` | 186 KB |
+
+MCMC convergence diagnostics (10^3 samples): acceptance fraction 0.39, autocorrelation time ~10 steps.
+For production-quality posteriors, increase to `--nsteps 10000` or higher.
+
+---
+
+## Code Modules
 
 ### 1. GRMHD Acceleration (`grmhd_acceleration.py`)
 Calculates maximum Lorentz factors from:
-- Magnetic reconnection in σ >> 1 jets
-- Relativistic shock acceleration
+- Magnetic reconnection in sigma >> 1 jets (gamma_e = eta * sigma)
+- Hillas criterion for protons (gamma_p = eBR / m_p c^2)
 - **Generates Figure 2**
 
 ### 2. EFT Cross Sections (`eft_cross_sections.py`)
 Computes production cross sections using:
-- Contact interaction operators
-- EFT validity analysis
+- Dimension-6 contact interaction: sigma = s / (16 pi Lambda^4) * beta
+- EFT validity check: sqrt(s) < Lambda
 - **Generates Figures 1 & 3**
 
 ### 3. PDF Integration (`pdf_integration.py`)
 Integrates parton luminosities:
-- CT18 NNLO parton distribution functions
-- Hadronic cross section convolution
+- Parametric CT18 NNLO approximation: dL/dtau ~ tau^{-1} (1 - tau)^n
+- Hadronic cross section convolution at sqrt(s) ~ 10^8--10^9 GeV
 
 ### 4. Monte Carlo Sampling (`monte_carlo_sampling.py`)
 Bayesian parameter inference:
 - emcee affine-invariant sampler
-- 10^6 posterior samples across 5 chains
+- 10^3 samples (scalable to 10^6) with 10 walkers x 100 steps
 - Random seeds: {42, 137, 271, 314, 628} for reproducibility
 - **Generates Figure S1** (diagnostics)
 
 ### 5. Observational Constraints (`observational_constraints.py`)
 Multi-messenger limits:
-- Fermi-LAT 3FHL catalog (1,556 sources)
-- IceCube neutrino stacking (1,163 AGN)
-- Pierre Auger UHECR spectrum
+- Fermi-LAT: E^2 dN/dE < 10^{-12} erg/cm^2/s
+- IceCube: phi_nu < 10^{-18} GeV/cm^2/s/sr per AGN
+- Pierre Auger: UHECR spectrum above 10^{19.5} eV
 - **Generates Figure 4**
 
 ---
 
-## 📈 Figures
+## Figures
 
 All figures are generated programmatically from code:
 
@@ -183,12 +210,12 @@ Figures are saved in `figures/` as vector PDFs (300 dpi).
 
 ---
 
-## 🔄 Reproducibility
+## Reproducibility
 
 ### Computational Requirements
-- **MCMC scan**: ~8-12 hours on 16 cores (10^6 samples)
-- **Memory**: ~8 GB RAM
-- **Storage**: ~500 MB for MCMC output
+- **MCMC scan**: ~1 minute (10^3 samples; scalable to 10^6 with ~8 hours on 16 cores)
+- **Memory**: ~1 GB RAM (default); ~8 GB for 10^6 samples
+- **Storage**: minimal for 10^3 samples; ~500 MB for 10^6
 
 ### Random Seeds
 All random number generators are seeded for bit-exact reproducibility:
@@ -215,7 +242,7 @@ See `docs/submission_checklist.txt` for full checklist.
 
 ---
 
-## 📚 Citation
+## Citation
 
 If you use this code or data, please cite:
 
@@ -231,13 +258,13 @@ If you use this code or data, please cite:
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Fermi-LAT Collaboration for gamma-ray data
 - IceCube Collaboration for neutrino limits
@@ -247,7 +274,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📧 Contact
+## Contact
 
 **Kirti Patidar**
 Independent Researcher
@@ -259,7 +286,7 @@ For questions or issues:
 
 ---
 
-## 📝 Documentation
+## Documentation
 
 For detailed documentation, see:
 - [`docs/README.md`](docs/README.md) - Comprehensive technical documentation
@@ -269,6 +296,6 @@ For detailed documentation, see:
 
 ---
 
-**Status**: ArXiv Preprint Ready
-**Version**: 2.0-FINAL
-**Last Updated**: November 3, 2025
+**Status**: In preparation for arXiv submission
+**Version**: 2.1
+**Last Updated**: February 2026
