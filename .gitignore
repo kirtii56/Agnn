@@ -59,6 +59,7 @@ venv.bak/
 # LaTeX - Keep final PDFs
 !manuscript/manuscript_final.pdf
 !manuscript/supplementary_material.pdf
+manuscript/*Notes.bib
 
 # Data files (too large for git)
 data/*.fits
