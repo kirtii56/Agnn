@@ -3,7 +3,6 @@
 
 \usepackage{amsmath,amssymb,graphicx,hyperref,xcolor}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 
 \begin{document}
 
@@ -32,7 +31,7 @@ Monte Carlo analysis scanning EFT couplings $C_i = 10^{-3}$--1 and jet parameter
 
 The nature of dark matter remains unresolved. While weakly interacting massive particles (WIMPs) in the GeV--TeV range have dominated searches \citep{Jungman1996,Bertone2005}, null results from direct detection \citep{LZ2024} and collider experiments \citep{ATLAS2023} motivate exploring alternative candidates across extended mass ranges.
 
-Ultra-heavy dark matter (UHDM) with $m_X \gtrsim 10^{15}$ eV represents such a frontier \citep{Chung1998a,Kolb2017}. Standard production mechanisms involve gravitational particle creation during inflation \citep{Chung1998a} or thermal freeze-in at Planck-scale temperatures. Observational constraints from Pierre Auger photon limits yield $\tau_X > {\rm few} \times 10^{21}$ years for hadronically-decaying SHDM at $10^{15} < M_X < 10^{18}$ GeV \citep{Auger2019PRD}.
+Ultra-heavy dark matter (UHDM) with $m_X \gtrsim 10^{15}$ eV represents such a frontier \citep{Chung1998a,Kolb2017}. Standard production mechanisms involve gravitational particle creation during inflation \citep{Chung1998a} or thermal freeze-in at Planck-scale temperatures. Observational constraints from Pierre Auger photon limits yield $\tau_X > {\rm few} \times 10^{21}$ years for hadronically-decaying SHDM at $10^{15} < M_X < 10^{18}$ eV \citep{Auger2019PRD}.
 
 \subsection{Novel Hypothesis: AGN Jets as Production Sites}
 
@@ -64,7 +63,7 @@ P_{\rm BZ} = \frac{\kappa \Omega_H^2 \Phi_{\rm BH}^2}{4\pi c} f(\Omega_H)
 \label{eq:BZ_power}
 \end{equation}
 
-\noindent where $\kappa \approx 0.053$ for split monopole geometry, $\Omega_H = ac/(2r_H)$ is the horizon angular frequency with spin parameter $a$, and $\Phi_{\rm BH}$ is the magnetic flux threading the horizon. Modern GRMHD simulations \citep{Tchekhovskoy2010,McKinney2012} demonstrate Magnetically Arrested Disk (MAD) states achieve $\eta \approx 30\%$ for $a = 0.5$, increasing to $\eta \approx 140\%$ for $a = 0.99$. For fiducial parameters $M = 10^9 M_\odot$, $a = 0.9$, $B = 10^4$ G:
+where $\kappa \approx 0.053$ for split monopole geometry, $\Omega_H = ac/(2r_H)$ is the horizon angular frequency with spin parameter $a$, and $\Phi_{\rm BH}$ is the magnetic flux threading the horizon. Modern GRMHD simulations \citep{Tchekhovskoy2010,McKinney2012} demonstrate Magnetically Arrested Disk (MAD) states achieve $\eta \approx 30\%$ for $a = 0.5$, increasing to $\eta \approx 140\%$ for $a = 0.99$. For fiducial parameters $M = 10^9 M_\odot$, $a = 0.9$, $B = 10^4$ G:
 
 \begin{equation}
 P_{\rm BZ} \sim 10^{45}\text{--}10^{47} \text{ erg s}^{-1}
@@ -135,7 +134,7 @@ For parton-level (gluon-gluon) subprocesses with momentum fractions $x_1, x_2$:
 \label{eq:sqrt_s_hat}
 \end{equation}
 
-\textbf{Critical correction:} Using simplified parton distribution functions validated against CT18 NNLO predictions \citep{Hou2019}, the parton luminosity $\mathcal{L}_{gg}(\tau, s_{pp})$ for $\tau = \hat{s}/s_{pp} = 4m_X^2/s_{pp} \sim 10^{-2}$ (for $m_X = 10^{17}$ eV) gives $\mathcal{L}_{gg} \approx 10^{-3}$--$10^{-4}$---two orders of magnitude below naive estimates. This reduces gluon fusion cross sections by factors of 30-100 (addressed in Section~\ref{sec:production}). Our PDF parametrization (power-law forms) reproduces CT18 NNLO predictions within factor-of-2 accuracy for our energy range, well within systematic uncertainties.
+Using simplified parton distribution functions validated against CT18 NNLO predictions \citep{Hou2019}, the parton luminosity $\mathcal{L}_{gg}(\tau, s_{pp})$ for $\tau = \hat{s}/s_{pp} = 4m_X^2/s_{pp} \sim 10^{-2}$ (for $m_X = 10^{17}$ eV) gives $\mathcal{L}_{gg} \approx 10^{-3}$--$10^{-4}$---two orders of magnitude below naive estimates. This reduces gluon fusion cross sections by factors of 30-100 (addressed in Section~\ref{sec:production}). Our PDF parametrization (power-law forms) reproduces CT18 NNLO predictions within factor-of-2 accuracy for our energy range, well within systematic uncertainties.
 
 These energies are within the EFT validity regime:
 
@@ -144,7 +143,7 @@ These energies are within the EFT validity regime:
 \label{eq:EFT_cutoff}
 \end{equation}
 
-\noindent by nine orders of magnitude, confirming EFT applicability.
+by nine orders of magnitude, confirming EFT applicability.
 
 \section{UHDM Production Framework}
 \label{sec:production}
@@ -169,7 +168,7 @@ Production cross sections scale as:
 
 \subsection{Spatially-Integrated Production Rates}
 
-\textbf{Critical improvement (Issue 2.1):} We replace the single-zone approximation with spatial integration accounting for radial stratification:
+We replace the single-zone approximation with spatial integration accounting for radial stratification:
 
 \begin{equation}
 \dot{N}_X = \int_{r_{\rm min}}^{r_{\rm max}} \int_0^{2\pi} \int_0^{\theta_{\rm jet}} n_1(r) n_2(r) \sigma(r) v r^2 \sin\theta \, dr\, d\theta\, d\phi
@@ -187,7 +186,7 @@ Integration limits: $r_{\rm min} = 10 r_g$ (innermost stable orbit), $r_{\rm max
 
 \subsection{PDF-Weighted Gluon Fusion Rates}
 
-\textbf{Critical improvement (Issue 2.2):} For gluon-gluon fusion, we use CT18 NNLO parton distribution functions \citep{Hou2019}:
+For gluon-gluon fusion, we use CT18 NNLO parton distribution functions \citep{Hou2019}:
 
 \begin{equation}
 \frac{d\mathcal{L}_{gg}}{d\tau} = \int_{\tau}^{1} \frac{dx}{x} g(x, Q^2) g(\tau/x, Q^2)
@@ -265,7 +264,7 @@ consistent with the GZK regime. Composition evolution (light $\to$ heavy above $
 
 Table~\ref{tab:production_rates} shows median UHDM production rates with 68\% confidence intervals:
 
-\begin{table}[h]
+\begin{table*}[t]
 \centering
 \caption{UHDM Production Rates by Mass and Channel (PDF-Corrected)$^{\dagger}$}
 \label{tab:production_rates}
@@ -280,9 +279,9 @@ $10^{18}$ & $1 \times 10^5$ & $2 \times 10^2$ & $6 \times 10^7$ \\
 \hline\hline
 \end{tabular}\\[0.2cm]
 {\footnotesize $^{\dagger}$Values are order-of-magnitude analytical estimates with systematic uncertainties propagated from input parameters. Uncertainty ranges represent factor-of-$10^3$ systematic variations in magnetic field strength, EFT couplings, and acceleration efficiency.}
-\end{table}
+\end{table*}
 
-\textbf{Note:} Rates reduced by factors of 30-100 from earlier estimates due to PDF corrections (Section~\ref{sec:production}).
+Rates reduced by factors of 30-100 from earlier estimates due to PDF corrections (Section~\ref{sec:production}).
 
 All predictions lie below Fermi-LAT energy budget constraint (Eq.~\ref{eq:Ndot_limit}) by factors of $10^7$--$10^{12}$.
 
@@ -299,7 +298,7 @@ AGN jets cannot be the dominant UHDM production mechanism but represent a distin
 
 \subsection{UHDM Survival and Escape from Jets}
 
-\textbf{New analysis (Issue 2.3):} For EFT cross sections $\sigma_X \sim 10^{-37}$ cm$^2$, the jet optical depth is:
+For EFT cross sections $\sigma_X \sim 10^{-37}$ cm$^2$, the jet optical depth is:
 
 \begin{equation}
 \tau_X = n_p \sigma_X L_{\rm jet} \sim 10^{-14} \ll 1
@@ -313,7 +312,7 @@ v_{\rm esc} = \sqrt{\frac{2GM}{r}} \sim 0.1c
 \label{eq:v_esc}
 \end{equation}
 
-Since UHDM is produced with $v_X \sim c$, escape is guaranteed. Thermalization time:
+Since UHDM is produced with $v_X \sim c$, escape is kinematically assured. Thermalization time:
 
 \begin{equation}
 t_{\rm therm} \sim \frac{1}{n_p \sigma_X c} \sim 10^{21} \text{ s} \gg t_{\rm cross} \sim 10^6 \text{ s}
@@ -337,7 +336,7 @@ N_X^{\rm burst} \sim \dot{N}_X \times \Delta t_{\rm jet} \sim (10^{15} \text{ s}
 \label{eq:N_burst}
 \end{equation}
 
-Time-correlated signals in GW catalogs + UHDM detectors would be a smoking gun for astrophysical production (primordial UHDM has no GW correlation).
+Time-correlated signals in GW catalogs + UHDM detectors would be a unambiguous observational signature for astrophysical production (primordial UHDM has no GW correlation).
 
 \subsubsection{Direct Detection Threshold}
 
@@ -391,7 +390,7 @@ We have established a falsifiable framework for ultra-heavy dark matter producti
 
 Beyond numerical predictions, this work establishes a systematic methodology connecting micro-physics to macro-observables. Next-generation instruments (CTA, IceCube-Gen2, LISA) will reduce uncertainties to $\sim$ factor-of-10 within 5-10 years.
 
-AGN jets may not dominate UHDM production, but they offer unique probes of trans-Planckian physics through astrophysical observations.
+Although AGN jets do not constitute the dominant UHDM production mechanism, they offer unique probes of trans-Planckian physics through astrophysical observations.
 
 \begin{acknowledgments}
 We thank the Fermi-LAT, IceCube, Pierre Auger, and Telescope Array collaborations for publicly available data. This research was conducted independently without external funding.
@@ -418,7 +417,7 @@ These functional forms are standard in the literature and capture the essential 
 \section{MCMC Convergence Diagnostics}
 \label{app:mcmc}
 
-Full Monte Carlo parameter space exploration using emcee \citep{ForemanMackey2013} is available in the code repository. The parameter scan explores 4 dimensions: UHDM mass $M_X$, effective coupling $g_{\rm eff}$, magnetization parameter $\sigma$, and jet opening angle $\theta_{\rm jet}$. Convergence diagnostics (Gelman-Rubin $\hat{R}$, autocorrelation times, posterior predictive checks) confirm the robustness of our analytical estimates. MCMC output files and detailed convergence plots are available upon request from the author.
+Full Monte Carlo parameter space exploration using emcee \citep{ForemanMackey2013} is available in the code repository. The parameter scan explores 4 dimensions: UHDM mass $M_X$, effective coupling $g_{\rm eff}$, magnetization parameter $\sigma$, and jet opening angle $\theta_{\rm jet}$. Convergence diagnostics (Gelman-Rubin $\hat{R}$, autocorrelation times, posterior predictive checks) confirm the robustness of our analytical estimates. MCMC output files, convergence diagnostics, and all analysis scripts are publicly available in the code repository at \url{https://github.com/kirtii56/Agnn}.
 
 \section{Code and Data Availability}
 \label{app:code}
